@@ -1,4 +1,4 @@
-package br.com.aulaJPA.lojaVirtual;
+package br.com.dextraining.mediaStore;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
