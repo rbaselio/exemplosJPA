@@ -5,17 +5,26 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class EntityManagerUtil {
-private static EntityManagerFactory emf;
-	
+	private static EntityManagerFactory emf;
+	private static EntityManager em;
+
 	public static void criarConexao() {
-		emf = Persistence.createEntityManagerFactory("MediaStorePu");
+		if (emf == null || !emf.isOpen()) {
+			emf = Persistence.createEntityManagerFactory("MediaStorePu");
+		}
 	}
-	
+
 	public static EntityManager criarEntityManager() {
-		return emf.createEntityManager();
+		if (em == null || !em.isOpen()) {
+			em = emf.createEntityManager();
+		}
+		return em;
 	}
-	
+
 	public static void fechaConexao() {
+		if (em != null && em.isOpen()) {
+			em.close();
+		}
 		emf.close();
 	}
 }

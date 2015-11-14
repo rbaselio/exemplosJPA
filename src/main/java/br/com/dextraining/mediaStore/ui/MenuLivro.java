@@ -3,14 +3,13 @@ package br.com.dextraining.mediaStore.ui;
 import java.io.IOException;
 import java.util.List;
 
-import br.com.dextraining.mediaStore.entities.Cliente;
 import br.com.dextraining.mediaStore.entities.Livro;
-import br.com.dextraining.mediaStore.services.ClienteService;
 import br.com.dextraining.mediaStore.services.produto.LivroService;
 
 
 public class MenuLivro extends MenuBase {
 	private LivroService livroService = new LivroService();
+	Livro livro = new Livro();
 
 	@Override
 	public void executar() throws IOException {
@@ -40,10 +39,13 @@ public class MenuLivro extends MenuBase {
 			bucarPorNome();
 			break;
 		case '3':
+			alterar();
 			break;
 		case '4':
+			listarTodos();
 			break;	
 		case '5':
+			remover();
 			break;
 		case '6':
 			break;
@@ -52,20 +54,61 @@ public class MenuLivro extends MenuBase {
 		}
 	}
 
+	private void listarTodos() {
+		Integer max = 2;
+		Integer start = 0;
+		Long total = livroService.countAll();
+		List<Livro> todosLivros = null;
+		
+		do{
+			todosLivros	= livroService.findAll(start, max);
+			for (Livro livro : todosLivros) {
+				System.out.println(livro);		
+				
+			}
+			start += max;
+			if (start > total) break;
+			
+			
+			
+		} while (confirmacao("mostrar mais? (s/n)?: "));
+	}
+
+	private void remover() {
+		livro = livroService.findById(pedirLong("Digite o codigo do livro: "));
+		System.out.println(livro);
+		livroService.remove(livro);
+		
+	}
+
+	private void alterar() {
+		Long id = pedirLong("Digite o codigo do livro: ");
+		if(id != null){
+			livro = livroService.findById(id);
+			livro.setDescricao(pedirString("Digite a nova descrição do livro: "));
+			livro.setPreco(pedirValor("Digite o novo valor do livro: "));
+			livroService.update(livro);
+		}
+		else{
+			System.out.println("Livro não enctrado");
+		}
+		
+		
+	}
+
 	private void bucarPorNome() {
 		limparTela();
 		String nome = pedirString("Digite o nome do livro: ");
 		List<Livro> todosLivros = livroService.findByDescricao(nome);
-		for (Livro pessoa : todosLivros) {
-			System.out.println(pessoa);
+		for (Livro livro : todosLivros) {
+			System.out.println(livro);
 
 		}	
 		
 		
 	}
 
-	private void cadastrarLivro() {
-		Livro livro = new Livro();
+	private void cadastrarLivro() {		
 		livro.setDescricao(pedirString("Digite a descrição do livro: "));
 		livro.setISBN(pedirString("Digite o ISBN: "));
 		livro.setPreco(pedirValor("Digite o valor do livro: "));

@@ -1,10 +1,16 @@
 package br.com.dextraining.mediaStore.ui;
 
 import java.io.IOException;
+import java.util.List;
+
+import br.com.dextraining.mediaStore.entities.Filme;
+import br.com.dextraining.mediaStore.services.produto.FilmeService;
 
 
 public class MenuFilme extends MenuBase {
-
+	private FilmeService filmeService = new FilmeService();
+	
+	
 	@Override
 	public void executar() throws IOException {
 		int op;
@@ -27,8 +33,10 @@ public class MenuFilme extends MenuBase {
 		char opcao = (char) op;
 		switch (opcao) {
 		case '1':
+			cadastrarFilme();
 			break;
 		case '2':
+			buscarPorNome();
 			break;
 		case '3':
 			break;
@@ -42,4 +50,28 @@ public class MenuFilme extends MenuBase {
 			break;
 		}
 	}
+	
+	
+	private void buscarPorNome() {
+		limparTela();
+		String nome = pedirString("Digite o nome do filme: ");
+		List<Filme> todosFilmes = filmeService.findByDescricao(nome);
+		for (Filme filme : todosFilmes) {
+			System.out.println(filme);
+
+		}	
+		
+		
+	}
+
+	private void cadastrarFilme() {
+		Filme filme = new Filme();
+		filme.setDescricao(pedirString("Digite a descrição do Filme: "));
+		filme.setDuracao(pedirInteiro("Digite a duração: "));
+		filme.setPreco(pedirValor("Digite o valor do livro: "));
+		filmeService.persist(filme);
+		
+		
+	}
+	
 }

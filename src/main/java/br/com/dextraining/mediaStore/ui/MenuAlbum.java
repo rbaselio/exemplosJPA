@@ -1,10 +1,16 @@
 package br.com.dextraining.mediaStore.ui;
 
 import java.io.IOException;
+import java.util.List;
+
+import br.com.dextraining.mediaStore.entities.Album;
+import br.com.dextraining.mediaStore.services.produto.AlbumService;
 
 
 public class MenuAlbum extends MenuBase {
 
+	private AlbumService albumService = new AlbumService();
+	
 	@Override
 	public void executar() throws IOException {
 		int op;
@@ -25,8 +31,10 @@ public class MenuAlbum extends MenuBase {
 		char opcao = (char) op;
 		switch (opcao) {
 		case '1':
+			cadastrarAlbum();
 			break;
 		case '2':
+			buscarPorNome();
 			break;
 		case '3':
 			break;
@@ -39,4 +47,27 @@ public class MenuAlbum extends MenuBase {
 		}
 	}
 
+	
+	private void buscarPorNome() {
+		limparTela();
+		String nome = pedirString("Digite o nome do album: ");
+		List<Album> todosAlbums = albumService.findByDescricao(nome);
+		for (Album album : todosAlbums) {
+			System.out.println(album);
+
+		}	
+		
+		
+	}
+
+	private void cadastrarAlbum() {
+		Album album = new Album();
+		album.setDescricao(pedirString("Digite a descrição do Album: "));
+		album.setFaixas(pedirInteiro("Digite a quantidade de faixas: "));
+		album.setPreco(pedirValor("Digite o valor do livro: "));
+		albumService.persist(album);
+		
+		
+	}
+	
 }

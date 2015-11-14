@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 
 
 @Entity
-@DiscriminatorValue(value = "Livro")
+
 public class Livro extends Produto{
 	
 	@Column

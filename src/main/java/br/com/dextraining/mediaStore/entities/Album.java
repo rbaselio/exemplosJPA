@@ -1,11 +1,10 @@
 package br.com.dextraining.mediaStore.entities;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value =  "Album")
+
 public class Album extends Produto{
 	
 	@Column

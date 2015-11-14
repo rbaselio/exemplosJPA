@@ -3,18 +3,12 @@ package br.com.dextraining.mediaStore.entities;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_Produto")
-
+@MappedSuperclass
 public class Produto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
