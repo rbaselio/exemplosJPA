@@ -1,11 +1,11 @@
-package br.com.dextraining.mediaStore.ui;
+package br.com.roberto.mediaStore.ui;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import br.com.dextraining.mediaStore.entities.Cliente;
-import br.com.dextraining.mediaStore.services.ClienteService;
+import br.com.roberto.mediaStore.entities.Cliente;
+import br.com.roberto.mediaStore.services.ClienteService;
 
 public class MenuClientes extends MenuBase {
 	Cliente c1 = new Cliente();

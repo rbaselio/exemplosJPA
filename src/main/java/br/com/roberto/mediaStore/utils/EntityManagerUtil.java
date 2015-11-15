@@ -1,4 +1,4 @@
-package br.com.dextraining.mediaStore.utils;
+package br.com.roberto.mediaStore.utils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

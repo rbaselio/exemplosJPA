@@ -1,4 +1,4 @@
-package br.com.dextraining.mediaStore.entities;
+package br.com.roberto.mediaStore.entities;
 
 import java.math.BigDecimal;
 

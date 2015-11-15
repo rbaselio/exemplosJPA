@@ -1,13 +1,13 @@
-package br.com.dextraining.mediaStore.services.produto;
+package br.com.roberto.mediaStore.services.produto;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import br.com.dextraining.mediaStore.entities.Album;
-import br.com.dextraining.mediaStore.services.ProdutoService;
-import br.com.dextraining.mediaStore.utils.EntityManagerUtil;
+import br.com.roberto.mediaStore.entities.Album;
+import br.com.roberto.mediaStore.services.ProdutoService;
+import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
 public class AlbumService extends ProdutoService<Album>  {
 	

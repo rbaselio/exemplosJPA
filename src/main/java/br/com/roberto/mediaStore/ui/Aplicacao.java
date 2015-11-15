@@ -1,8 +1,8 @@
-package br.com.dextraining.mediaStore.ui;
+package br.com.roberto.mediaStore.ui;
 
 import java.io.IOException;
 
-import br.com.dextraining.mediaStore.utils.EntityManagerUtil;
+import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
 
 public class Aplicacao extends MenuBase{

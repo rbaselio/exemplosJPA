@@ -1,8 +1,8 @@
-package br.com.dextraining.mediaStore.exemplos;
+package br.com.roberto.mediaStore.exemplos;
 
-import br.com.dextraining.mediaStore.entities.Cliente;
-import br.com.dextraining.mediaStore.services.ClienteService;
-import br.com.dextraining.mediaStore.utils.EntityManagerUtil;
+import br.com.roberto.mediaStore.entities.Cliente;
+import br.com.roberto.mediaStore.services.ClienteService;
+import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
 public class InserirClientes {
 

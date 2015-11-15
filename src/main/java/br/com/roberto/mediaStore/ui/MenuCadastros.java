@@ -1,4 +1,4 @@
-package br.com.dextraining.mediaStore.ui;
+package br.com.roberto.mediaStore.ui;
 
 import java.io.IOException;
 

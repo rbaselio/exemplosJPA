@@ -1,4 +1,4 @@
-package br.com.dextraining.mediaStore.services;
+package br.com.roberto.mediaStore.services;
 
 import java.util.List;
 

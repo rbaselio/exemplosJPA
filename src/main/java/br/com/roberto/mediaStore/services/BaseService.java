@@ -1,4 +1,4 @@
-package br.com.dextraining.mediaStore.services;
+package br.com.roberto.mediaStore.services;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import br.com.dextraining.mediaStore.utils.EntityManagerUtil;
+import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
 public class BaseService<T, C> {
 	protected Class<C> entityClass;
