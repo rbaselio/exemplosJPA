@@ -1,4 +1,4 @@
-package br.com.dextraining.mediaStore.gui;
+package br.com.roberto.mediaStore.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -6,6 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import br.com.roberto.mediaStore.utils.EntityManagerUtil;
+
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JMenu;
@@ -14,6 +17,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenuItem;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class TelaInicial extends JFrame {
 
@@ -26,6 +31,7 @@ public class TelaInicial extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					EntityManagerUtil.criarConexao();
 					TelaInicial frame = new TelaInicial();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -35,10 +41,22 @@ public class TelaInicial extends JFrame {
 		});
 	}
 
+	
+	
 	/**
 	 * Create the frame.
 	 */
 	public TelaInicial() {
+		addWindowListener(new WindowAdapter() {
+			@Override	
+			
+			public void windowClosing(WindowEvent e) {
+				System.out.println("Encerrando sistema...");
+				EntityManagerUtil.fechaConexao();
+				System.out.println("Sistema encerrado");
+				System.exit(0);
+			}
+		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		

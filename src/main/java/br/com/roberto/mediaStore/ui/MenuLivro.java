@@ -9,7 +9,7 @@ import br.com.roberto.mediaStore.services.produto.LivroService;
 
 public class MenuLivro extends MenuBase {
 	private LivroService livroService = new LivroService();
-	Livro livro = new Livro();
+	private Livro livro = new Livro();
 
 	@Override
 	public void executar() throws IOException {

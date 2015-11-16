@@ -17,16 +17,19 @@ public class BaseService<T, C> {
 	}
 
 	public List<C> findAll(Integer offset, Integer max) {
-		String jpql = "FROM " + entityClass.getSimpleName();
+		String jpql = "FROM " + entityClass.getSimpleName() + " ORDER BY ID" ;
 		TypedQuery<C> query = getEm().createQuery(jpql, entityClass);
-		
-		
 		if (offset != null) query.setFirstResult(offset);
-		if (max != null) query.setMaxResults(max);		
-		
-		
-		
+		if (max != null) query.setMaxResults(max);	
 		return query.getResultList();
+	}
+	
+	public C find(Integer offset, Integer max) {
+		String jpql = "FROM " + entityClass.getSimpleName() + " ORDER BY ID";
+		TypedQuery<C> query = getEm().createQuery(jpql, entityClass);
+		if (offset != null) query.setFirstResult(offset);
+		if (max != null) query.setMaxResults(max);	
+		return query.getSingleResult();
 	}
 	
 	public Long countAll(){

@@ -1,12 +1,10 @@
-package br.com.dextraining.mediaStore.gui;
-
-import java.awt.BorderLayout;
+package br.com.roberto.mediaStore.gui;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 public class CadastrosClientes extends JFrame {
 
