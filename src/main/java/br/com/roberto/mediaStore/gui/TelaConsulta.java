@@ -13,26 +13,30 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class TelaConsulta extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3863066712292676755L;
 	private final JPanel contentPanel = new JPanel();
 	private static JTable table = new JTable();
 	private static String retorno;
-	private static Integer start = 0;
-	private static Integer max = 10;
-	LivroTableModel model;
+	private static AbstractTableModel model;
 
 	private static TelaConsulta instance;
 
-	public static Integer getInteger(JFrame pai) {
+	public static Integer getInteger(JFrame pai, AbstractTableModel models) {
+		model = models;
+		
 		if (instance == null)
 			instance = new TelaConsulta();
-		start = 0;
-
+		
 		instance.setLocationRelativeTo(pai);
 		instance.setTitle("Clique sobre a linha desejado");
 		instance.setModal(true);
@@ -57,10 +61,10 @@ public class TelaConsulta extends JDialog {
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		JScrollPane scrollPane = new JScrollPane();
 		contentPanel.add(scrollPane, BorderLayout.CENTER);
-
-		start = 0;
-		model = new LivroTableModel(start, max);
-		novaCarga(start);
+		
+		table.setModel(model);
+		alinhar();
+		
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -84,31 +88,6 @@ public class TelaConsulta extends JDialog {
 				instance.setVisible(false);
 			}
 		});
-
-		JButton btnPrvPage = new JButton("Página Anterior");
-		btnPrvPage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (start > 0)
-					start -= max;
-				model = new LivroTableModel(start, max);
-				if (model.getRowCount() > 0)
-					novaCarga(start);
-			}
-		});
-		buttonPane.add(btnPrvPage);
-
-		JButton btnNextPage = new JButton("Próxima Pagina");
-		btnNextPage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				start += max;
-				model = new LivroTableModel(start, max);
-				if (model.getRowCount() > 0)
-					novaCarga(start);
-				else
-					start -= max;
-			}
-		});
-		buttonPane.add(btnNextPage);
 		okButton.setActionCommand("OK");
 		buttonPane.add(okButton);
 		getRootPane().setDefaultButton(okButton);
@@ -125,8 +104,7 @@ public class TelaConsulta extends JDialog {
 
 	}
 
-	private void novaCarga(Integer start) {
-		table.setModel(model);
+	private void alinhar() {		
 		for (int column = 0; column < table.getColumnModel().getColumnCount(); column++) {
 			int width = 50; // Min width
 			for (int row = 0; row < table.getRowCount(); row++) {
@@ -134,8 +112,7 @@ public class TelaConsulta extends JDialog {
 				Component comp = table.prepareRenderer(renderer, row, column);
 				width = Math.max(comp.getPreferredSize().width + 1, width);
 			}
-			table.getColumnModel().getColumn(column).setPreferredWidth(width);
-			// table.getColumnModel().getColumn(column).setResizable(true);
+			table.getColumnModel().getColumn(column).setPreferredWidth(width);			
 		}
 
 	}

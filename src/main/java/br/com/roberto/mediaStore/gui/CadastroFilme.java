@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -14,33 +14,33 @@ import javax.swing.SwingConstants;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
-import br.com.roberto.mediaStore.entities.Livro;
-import br.com.roberto.mediaStore.gui.TableModels.LivroTableModel;
-import br.com.roberto.mediaStore.services.produto.LivroService;
-import javax.swing.JFormattedTextField;
+import br.com.roberto.mediaStore.entities.Filme;
+import br.com.roberto.mediaStore.gui.TableModels.FilmeTableModel;
+import br.com.roberto.mediaStore.services.produto.FilmeService;
+import br.com.roberto.mediaStore.utils.TamanhoMaximo;
 
-public class CadastroLivro extends CadastroBase {
+public class CadastroFilme extends CadastroBase {
 	private static final long serialVersionUID = -5594069332447084539L;
 
-	private LivroService livroService = new LivroService();
-	private Livro livro = new Livro();
+	private FilmeService filmeService = new FilmeService();
+	private Filme filme = new Filme();
 
 	private Integer max = 1;
 	private Integer start = 0;
 
 	private JTextField jtfCodigo;
 	private JTextField jtfDescricao;
-	private JTextField jtfISBN;
+	private JTextField jtfDuracao;
 	JFormattedTextField jtfPreco = new JFormattedTextField();
-	Integer totallivro;
+	Integer totalfilme;
 
 	/**
 	 * Create the frame.
 	 */
-	public CadastroLivro() {
+	public CadastroFilme() {
 		super();
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 521, 227);
+		setBounds(100, 100, 521, 215);
 
 		JLabel lblCdigo = new JLabel("Código:");
 		lblCdigo.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -62,15 +62,20 @@ public class CadastroLivro extends CadastroBase {
 		getContentPane().add(jtfDescricao);
 		jtfDescricao.setColumns(10);
 
-		JLabel lblIsbn = new JLabel("ISBN:");
+		JLabel lblIsbn = new JLabel("Duração:");
 		lblIsbn.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblIsbn.setBounds(22, 131, 70, 15);
 		getContentPane().add(lblIsbn);
 
-		jtfISBN = new JTextField();
-		jtfISBN.setColumns(10);
-		jtfISBN.setBounds(101, 129, 191, 19);
-		getContentPane().add(jtfISBN);
+		jtfDuracao = new JTextField();
+		jtfDuracao.setColumns(10);
+		jtfDuracao.setBounds(101, 129, 103, 19);
+		jtfDuracao.setDocument(new TamanhoMaximo(5, true));
+		getContentPane().add(jtfDuracao);
+		
+		JLabel lblMinutos = new JLabel("minutos");
+		lblMinutos.setBounds(212, 133, 70, 15);
+		getContentPane().add(lblMinutos);
 		
 		JLabel lblPreo = new JLabel("Preço:");
 		lblPreo.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -78,44 +83,49 @@ public class CadastroLivro extends CadastroBase {
 		getContentPane().add(lblPreo);
 		
 		
-		jtfPreco.setBounds(101, 156, 191, 19);
+		jtfPreco.setBounds(101, 156, 140, 19);
 		jtfPreco.setFormatterFactory(new DefaultFormatterFactory(
                 new NumberFormatter(new DecimalFormat("#,##0.00"))));
 		
 		
 		getContentPane().add(jtfPreco);
+		
 
 		habilitarCampos(true);
 		gotoPrimeiro();
-		totallivro = livroService.countAll().intValue() - 1;
+		totalfilme = filmeService.countAll().intValue() - 1;
 		
-		this.setTitle("Livros");
+		this.setTitle("Filmes");
 
 	}
 
-	private void preencher(Livro livro) {
-		jtfCodigo.setText(livro.getId().toString());
-		jtfDescricao.setText(livro.getDescricao());
-		jtfISBN.setText(livro.getISBN());
+	private void preencher(Filme filme) {
+		jtfCodigo.setText(filme.getId().toString());
+		jtfDescricao.setText(filme.getDescricao());
+		jtfDuracao.setText(filme.getDuracao().toString());
 		DecimalFormat df = new DecimalFormat("#,##0.00") ;
-		jtfPreco.setText(df.format(livro.getPreco()));
+		jtfPreco.setText(df.format(filme.getPreco()));
+		
 	}
 
 	@Override
 	protected void gotoPrimeiro() {
 		start = 0;
-		livro =  livroService.find(start, max);
-		preencher(livro);
+		try{
+		filme =  filmeService.find(start, max);
+		preencher(filme);
+		}catch(Exception e){}
+		
 		
 
 	}
 
 	@Override
 	protected void gotoProximo() {
-		if (start < totallivro)
+		if (start < totalfilme)
 			start += 1;
-		livro =  livroService.find(start, max);
-		preencher(livro);
+		filme =  filmeService.find(start, max);
+		preencher(filme);
 
 	}
 
@@ -123,34 +133,34 @@ public class CadastroLivro extends CadastroBase {
 	protected void gotoAnterior() {
 		if (start > 0)
 			start -= 1;
-		livro =  livroService.find(start, max);
-		preencher(livro);
+		filme =  filmeService.find(start, max);
+		preencher(filme);
 
 	}
 
 	@Override
 	protected void gotoUltimo() {
-		start = totallivro;
-		livro =  livroService.find(start, max);
-		preencher(livro);
+		start = totalfilme;
+		filme =  filmeService.find(start, max);
+		preencher(filme);
 
 	}
 
 	@Override
 	protected void pesquisar() {
 		
-		Long id = TelaConsulta.getInteger(this, new LivroTableModel()).longValue();
+		Long id = TelaConsulta.getInteger(this, new FilmeTableModel()).longValue();
 		buscar(id);
 
 	}
 
 	private void buscar(Long id) {
 		if (id != null) {
-			livro = livroService.findById(id);
-			if (livro != null)
-				preencher(livro);
+			filme = filmeService.findById(id);
+			if (filme != null)
+				preencher(filme);
 			else
-				JOptionPane.showMessageDialog(this, "Livro não encontrado");
+				JOptionPane.showMessageDialog(this, "Filme não encontrado");
 		}
 	}
 
@@ -162,17 +172,21 @@ public class CadastroLivro extends CadastroBase {
 
 	@Override
 	protected void incluir() {
-		habilitarCampos(false);
+		habilitarCampos(false);		
+		limpar();		
+	}
+
+	private void limpar() {
 		jtfCodigo.setText("");
 		jtfDescricao.setText("");
-		jtfISBN.setText("");
+		jtfDuracao.setText("");
 		jtfPreco.setText("");
-		
 	}	
 
 	@Override
 	protected void remover() {
 		habilitarCampos(true);
+		limpar();
 		int op = JOptionPane.showConfirmDialog(this, "Confirma exclusão do registro?", "EXCLUSÃO", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE );
 		if (op == 0) confirmar();
 	}
@@ -181,47 +195,46 @@ public class CadastroLivro extends CadastroBase {
 	protected void confirmar() {
 		switch (operacao) {
 		case INCLUIR:
-			livro = new Livro();			
-			atualizarLivro();
-			livroService.persist(livro);
+			filme = new Filme();			
+			atualizarFilme();
+			filmeService.persist(filme);
 			break;
 		case ALTERAR:
-			atualizarLivro();			
-			livroService.update(livro);
+			atualizarFilme();			
+			filmeService.update(filme);
 			break;
 		case REMOVER:
-			livroService.remove(livro);
+			filmeService.remove(filme);
 			gotoAnterior();
 			break;		
 		default:
 			break;
 		}
 		habilitarCampos(true);
-		preencher(livro);
+		preencher(filme);
 		operacao = 0;		
-		totallivro = livroService.countAll().intValue() - 1;		
+		totalfilme = filmeService.countAll().intValue() - 1;		
 
 	}
 
-	private void atualizarLivro() {
-		livro.setDescricao(jtfDescricao.getText());
-		livro.setISBN(jtfISBN.getText());
+	private void atualizarFilme() {
+		filme.setDescricao(jtfDescricao.getText());
+		filme.setDuracao(Integer.parseInt(jtfDuracao.getText()));	
 		try {
 			String numberToFormat = jtfPreco.getText();
 	        NumberFormat formatter = NumberFormat.getNumberInstance();
 	        Number number = formatter.parse(numberToFormat);
 			BigDecimal decimal = BigDecimal.valueOf(number.doubleValue());
-			livro.setPreco(decimal);
+			filme.setPreco(decimal);
 		} catch (ParseException e) {				
 			e.printStackTrace();
-		}			
-		
+		}		
 	}
 
 	@Override
 	protected void cancelar() {
 		habilitarCampos(true);
-		preencher(livro);
+		preencher(filme);
 		
 	}
 	
@@ -231,8 +244,8 @@ public class CadastroLivro extends CadastroBase {
 		super.habilitarCampos(habilita);
 		jtfCodigo.setEditable(false);
 		jtfDescricao.setEditable(!habilita);
-		jtfISBN.setEditable(!habilita);
-		jtfPreco.setEditable(!habilita);		
+		jtfDuracao.setEditable(!habilita);
+		jtfPreco.setEditable(!habilita);
 	}
 
 	@Override

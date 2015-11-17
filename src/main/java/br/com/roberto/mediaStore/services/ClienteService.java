@@ -2,11 +2,9 @@ package br.com.roberto.mediaStore.services;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import br.com.roberto.mediaStore.entities.Cliente;
-import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
 public class ClienteService extends BaseService<Long, Cliente> {
 

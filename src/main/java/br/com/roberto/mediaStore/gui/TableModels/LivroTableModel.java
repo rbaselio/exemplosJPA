@@ -1,9 +1,9 @@
-package br.com.roberto.mediaStore.gui;
+package br.com.roberto.mediaStore.gui.TableModels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
+
 import br.com.roberto.mediaStore.entities.Livro;
 import br.com.roberto.mediaStore.services.produto.LivroService;
 
@@ -14,9 +14,9 @@ public class LivroTableModel extends AbstractTableModel{
 	LivroService livroService = new LivroService();
 	private List<Livro>  livrosList;
 
-	public LivroTableModel(Integer start, Integer max) {
-        super();        
-        livrosList = livroService.findAll(start, max);       
+	public LivroTableModel() {
+		super();
+        livrosList = livroService.findAll(null, null);       
     }
 	
 	public int getRowCount() {
