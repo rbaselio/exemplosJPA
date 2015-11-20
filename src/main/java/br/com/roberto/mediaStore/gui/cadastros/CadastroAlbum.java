@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.gui;
+package br.com.roberto.mediaStore.gui.cadastros;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -15,6 +15,9 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
 import br.com.roberto.mediaStore.entities.Album;
+import br.com.roberto.mediaStore.gui.CadastroBase;
+import br.com.roberto.mediaStore.gui.LerDado;
+import br.com.roberto.mediaStore.gui.TelaConsulta;
 import br.com.roberto.mediaStore.gui.TableModels.AlbumTableModel;
 import br.com.roberto.mediaStore.services.produto.AlbumService;
 import br.com.roberto.mediaStore.utils.TamanhoMaximo;
@@ -89,18 +92,20 @@ public class CadastroAlbum extends CadastroBase {
 
 		habilitarCampos(true);
 		gotoPrimeiro();
-		totalalbum = albumService.countAll().intValue() - 1;
+		totalalbum = albumService.countAll().intValue();
 		
 		this.setTitle("Albums");
 
 	}
 
 	private void preencher(Album album) {
-		jtfCodigo.setText(album.getId().toString());
-		jtfDescricao.setText(album.getDescricao());
-		jtfFaixas.setText(album.getFaixas().toString());
-		DecimalFormat df = new DecimalFormat("#,##0.00") ;
-		jtfPreco.setText(df.format(album.getPreco()));
+		if (album != null){
+			jtfCodigo.setText(album.getId().toString());
+			jtfDescricao.setText(album.getDescricao());
+			jtfFaixas.setText(album.getFaixas().toString());
+			DecimalFormat df = new DecimalFormat("#,##0.00") ;
+			jtfPreco.setText(df.format(album.getPreco()));
+		}
 		
 	}
 
@@ -143,14 +148,17 @@ public class CadastroAlbum extends CadastroBase {
 	}
 
 	@Override
-	protected void pesquisar() {
-		
-		Long id = TelaConsulta.getInteger(this, new AlbumTableModel()).longValue();
-		buscar(id);
-
+	protected void pesquisar() {		
+		AlbumTableModel tableModel = new AlbumTableModel();
+		tableModel.setService(albumService);
+		album = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
+		preencher(album);
 	}
+	
 
-	private void buscar(Long id) {
+	@Override
+	protected void vaPara() {
+		Long id = LerDado.getInteger(this, "Codigo: ").longValue();
 		if (id != null) {
 			album = albumService.findById(id);
 			if (album != null)
@@ -158,12 +166,6 @@ public class CadastroAlbum extends CadastroBase {
 			else
 				JOptionPane.showMessageDialog(this, "Album não encontrado");
 		}
-	}
-
-	@Override
-	protected void vaPara() {
-		Long id = LerDado.getInteger(this, "Codigo: ").longValue();
-		buscar(id);
 	}
 
 	@Override

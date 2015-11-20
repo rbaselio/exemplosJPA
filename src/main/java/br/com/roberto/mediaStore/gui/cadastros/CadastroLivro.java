@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.gui;
+package br.com.roberto.mediaStore.gui.cadastros;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -15,6 +15,10 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
 import br.com.roberto.mediaStore.entities.Livro;
+import br.com.roberto.mediaStore.gui.CadastroBase;
+import br.com.roberto.mediaStore.gui.LerDado;
+import br.com.roberto.mediaStore.gui.TelaConsulta;
+import br.com.roberto.mediaStore.gui.TableModels.ClienteTableModel;
 import br.com.roberto.mediaStore.gui.TableModels.LivroTableModel;
 import br.com.roberto.mediaStore.services.produto.LivroService;
 import javax.swing.JFormattedTextField;
@@ -94,11 +98,13 @@ public class CadastroLivro extends CadastroBase {
 	}
 
 	private void preencher(Livro livro) {
-		jtfCodigo.setText(livro.getId().toString());
-		jtfDescricao.setText(livro.getDescricao());
-		jtfISBN.setText(livro.getISBN());
-		DecimalFormat df = new DecimalFormat("#,##0.00") ;
-		jtfPreco.setText(df.format(livro.getPreco()));
+		if (livro != null){
+			jtfCodigo.setText(livro.getId().toString());
+			jtfDescricao.setText(livro.getDescricao());
+			jtfISBN.setText(livro.getISBN());
+			DecimalFormat df = new DecimalFormat("#,##0.00") ;
+			jtfPreco.setText(df.format(livro.getPreco()));
+		}
 	}
 
 	@Override
@@ -139,12 +145,20 @@ public class CadastroLivro extends CadastroBase {
 	@Override
 	protected void pesquisar() {
 		
-		Long id = TelaConsulta.getInteger(this, new LivroTableModel()).longValue();
-		buscar(id);
+		LivroTableModel tableModel = new LivroTableModel();
+		tableModel.setService(livroService);
+		livro = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
+		preencher(livro);
+		
+		
 
 	}
 
-	private void buscar(Long id) {
+	
+
+	@Override
+	protected void vaPara() {
+		Long id = LerDado.getInteger(this, "Codigo: ").longValue();
 		if (id != null) {
 			livro = livroService.findById(id);
 			if (livro != null)
@@ -152,12 +166,6 @@ public class CadastroLivro extends CadastroBase {
 			else
 				JOptionPane.showMessageDialog(this, "Livro não encontrado");
 		}
-	}
-
-	@Override
-	protected void vaPara() {
-		Long id = LerDado.getInteger(this, "Codigo: ").longValue();
-		buscar(id);
 	}
 
 	@Override

@@ -16,6 +16,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import br.com.roberto.mediaStore.gui.cadastros.CadastroAlbum;
+import br.com.roberto.mediaStore.gui.cadastros.CadastroClientes;
+import br.com.roberto.mediaStore.gui.cadastros.CadastroFilme;
+import br.com.roberto.mediaStore.gui.cadastros.CadastroLivro;
 import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
 public class TelaInicial extends JFrame {

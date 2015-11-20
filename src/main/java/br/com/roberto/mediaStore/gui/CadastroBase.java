@@ -122,8 +122,9 @@ public abstract class CadastroBase extends JFrame {
 		
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				remover();
 				operacao = REMOVER;
+				remover();
+				
 			}
 		});
 		btnExcluir.setToolTipText("Excluir");
@@ -132,8 +133,9 @@ public abstract class CadastroBase extends JFrame {
 		
 		btnAlterar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				alterar();
 				operacao = ALTERAR;
+				alterar();
+				
 			}
 		});
 		btnAlterar.setToolTipText("Alterar");
@@ -141,8 +143,9 @@ public abstract class CadastroBase extends JFrame {
 		
 		btnIncluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				incluir();
 				operacao = INCLUIR;
+				incluir();
+				
 			}
 		});
 		btnIncluir.setToolTipText("Incluir");

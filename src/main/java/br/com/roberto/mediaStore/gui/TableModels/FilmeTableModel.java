@@ -1,40 +1,25 @@
 package br.com.roberto.mediaStore.gui.TableModels;
 
-import java.util.List;
-
-import javax.swing.table.AbstractTableModel;
+import java.text.DecimalFormat;
 
 import br.com.roberto.mediaStore.entities.Filme;
-import br.com.roberto.mediaStore.services.produto.FilmeService;
 
-public class FilmeTableModel extends AbstractTableModel{
+public class FilmeTableModel extends BaseTableModel<Filme>{
 	private static final long serialVersionUID = 6105842825518764825L;
-	private String[] columnNames = new String[] { "Codigo", "Descricao", "Duração", "Valor"};
 	
-	FilmeService livroService = new FilmeService();
-	private List<Filme>  livrosList;
-
+	
 	public FilmeTableModel() {
 		super();
-        livrosList = livroService.findAll(null, null);       
-    }
+		this.entityClass = Filme.class;
+		this.columnNames = new String[] { "Codigo", "Descricao", "Duração", "Valor"};
+	}	
 	
-	public int getRowCount() {
-		return livrosList.size();
-	}
-
-	public int getColumnCount() {
-		return columnNames.length;
-	}
-
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		Filme livro = livrosList.get(rowIndex);
-		Object[] values = new Object[] { livro.getId(), livro.getDescricao(), livro.getDuracao(), livro.getPreco() };
+	
+	public Object getValueAt(int rowIndex, int columnIndex) {		
+		Filme l = entityList.get(rowIndex);
+		DecimalFormat df = new DecimalFormat("#,##0.00") ;
+		
+		Object[] values = new Object[] { l.getId(), l.getDescricao(), l.getDuracao(), df.format(l.getPreco()) };
 		return values[columnIndex];
-	}
-
-	@Override
-	public String getColumnName(int column) {		
-		return columnNames[column];
 	}
 }

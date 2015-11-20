@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.gui;
+package br.com.roberto.mediaStore.gui.cadastros;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -15,6 +15,10 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
 import br.com.roberto.mediaStore.entities.Filme;
+import br.com.roberto.mediaStore.gui.CadastroBase;
+import br.com.roberto.mediaStore.gui.LerDado;
+import br.com.roberto.mediaStore.gui.TelaConsulta;
+import br.com.roberto.mediaStore.gui.TableModels.AlbumTableModel;
 import br.com.roberto.mediaStore.gui.TableModels.FilmeTableModel;
 import br.com.roberto.mediaStore.services.produto.FilmeService;
 import br.com.roberto.mediaStore.utils.TamanhoMaximo;
@@ -93,18 +97,20 @@ public class CadastroFilme extends CadastroBase {
 
 		habilitarCampos(true);
 		gotoPrimeiro();
-		totalfilme = filmeService.countAll().intValue() - 1;
+		totalfilme = filmeService.countAll().intValue();
 		
 		this.setTitle("Filmes");
 
 	}
 
 	private void preencher(Filme filme) {
-		jtfCodigo.setText(filme.getId().toString());
-		jtfDescricao.setText(filme.getDescricao());
-		jtfDuracao.setText(filme.getDuracao().toString());
-		DecimalFormat df = new DecimalFormat("#,##0.00") ;
-		jtfPreco.setText(df.format(filme.getPreco()));
+		if (filme != null) {
+			jtfCodigo.setText(filme.getId().toString());
+			jtfDescricao.setText(filme.getDescricao());
+			jtfDuracao.setText(filme.getDuracao().toString());
+			DecimalFormat df = new DecimalFormat("#,##0.00") ;
+			jtfPreco.setText(df.format(filme.getPreco()));
+		}
 		
 	}
 
@@ -114,8 +120,7 @@ public class CadastroFilme extends CadastroBase {
 		try{
 		filme =  filmeService.find(start, max);
 		preencher(filme);
-		}catch(Exception e){}
-		
+		}catch(Exception e){}	
 		
 
 	}
@@ -148,13 +153,18 @@ public class CadastroFilme extends CadastroBase {
 
 	@Override
 	protected void pesquisar() {
+		FilmeTableModel tableModel = new FilmeTableModel();
+		tableModel.setService(filmeService);
+		filme = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
+		preencher(filme);
 		
-		Long id = TelaConsulta.getInteger(this, new FilmeTableModel()).longValue();
-		buscar(id);
-
 	}
 
-	private void buscar(Long id) {
+	
+
+	@Override
+	protected void vaPara() {
+		Long id = LerDado.getInteger(this, "Codigo: ").longValue();
 		if (id != null) {
 			filme = filmeService.findById(id);
 			if (filme != null)
@@ -162,12 +172,6 @@ public class CadastroFilme extends CadastroBase {
 			else
 				JOptionPane.showMessageDialog(this, "Filme não encontrado");
 		}
-	}
-
-	@Override
-	protected void vaPara() {
-		Long id = LerDado.getInteger(this, "Codigo: ").longValue();
-		buscar(id);
 	}
 
 	@Override

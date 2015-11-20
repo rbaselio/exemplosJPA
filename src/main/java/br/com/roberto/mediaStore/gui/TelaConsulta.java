@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -13,26 +15,32 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-public class TelaConsulta extends JDialog {
+import br.com.roberto.mediaStore.gui.TableModels.BaseTableModel;
 
-	/**
+public class TelaConsulta extends JDialog {	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3863066712292676755L;
 	private final JPanel contentPanel = new JPanel();
 	private static JTable table = new JTable();
-	private static String retorno;
-	private static AbstractTableModel model;
+	private static Integer retorno;
+	private static BaseTableModel<?> model;
+	private static Integer start;
+	private static Integer max;
+	
 
 	private static TelaConsulta instance;
 
-	public static Integer getInteger(JFrame pai, AbstractTableModel models) {
+	public static Integer getEntidade(JFrame pai, BaseTableModel models) {
+		start = 0;
+		max = 10;
 		model = models;
+		
+		model.buscarLista(start, max);
+		table.setModel(model);
+		table.updateUI();	
 		
 		if (instance == null)
 			instance = new TelaConsulta();
@@ -41,13 +49,15 @@ public class TelaConsulta extends JDialog {
 		instance.setTitle("Clique sobre a linha desejado");
 		instance.setModal(true);
 		instance.setVisible(true);
+		
+		
+		
 
 		try {
-			return Integer.parseInt(retorno);
+			return retorno;
 		} catch (Exception e1) {
 			return null;
 		}
-
 	}
 
 	/**
@@ -62,14 +72,12 @@ public class TelaConsulta extends JDialog {
 		JScrollPane scrollPane = new JScrollPane();
 		contentPanel.add(scrollPane, BorderLayout.CENTER);
 		
-		table.setModel(model);
-		alinhar();
 		
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					retorno = table.getValueAt(table.getSelectedRow(), 0).toString();
+					retorno = table.getSelectedRow();
 					instance.setVisible(false);
 				}
 			}
@@ -84,10 +92,37 @@ public class TelaConsulta extends JDialog {
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				retorno = table.getValueAt(table.getSelectedRow(), 0).toString();
+				retorno = null;
+				if (table.getRowCount() > 0){
+					retorno = table.getSelectedRow();
+				}				
 				instance.setVisible(false);
 			}
 		});
+		
+		JButton btnPginaAnterior = new JButton("Página anterior");
+		btnPginaAnterior.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (start > 0) start -= max;
+				model.buscarLista(start, max);
+				table.updateUI();
+				alinhar();
+			}
+		});
+		buttonPane.add(btnPginaAnterior);
+		
+		JButton btnPrximaPgina = new JButton("Próxima página");
+		btnPrximaPgina.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (table.getRowCount() >= max){
+					start += max;
+					model.buscarLista(start, max);
+					table.updateUI();
+					alinhar();
+				}
+			}
+		});
+		buttonPane.add(btnPrximaPgina);
 		okButton.setActionCommand("OK");
 		buttonPane.add(okButton);
 		getRootPane().setDefaultButton(okButton);
@@ -95,7 +130,6 @@ public class TelaConsulta extends JDialog {
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				retorno = null;
 				instance.setVisible(false);
 			}
 		});

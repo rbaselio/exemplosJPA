@@ -4,32 +4,39 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
-public class BaseService<T, C> {
-	protected Class<C> entityClass;
+public class BaseService<T, E> {
+	protected Class<E> entityClass;
 
-	public C findById(T id) {
+	public E findById(T id) {
 		return getEm().find(entityClass, id);
 	}
 
-	public List<C> findAll(Integer offset, Integer max) {
+	public List<E> findAll(Integer offset, Integer max) {
 		String jpql = "FROM " + entityClass.getSimpleName() + " ORDER BY ID" ;
-		TypedQuery<C> query = getEm().createQuery(jpql, entityClass);
+		TypedQuery<E> query = getEm().createQuery(jpql, entityClass);
 		if (offset != null) query.setFirstResult(offset);
 		if (max != null) query.setMaxResults(max);	
 		return query.getResultList();
 	}
 	
-	public C find(Integer offset, Integer max) {
+	public E find(Integer offset, Integer max) {
 		String jpql = "FROM " + entityClass.getSimpleName() + " ORDER BY ID";
-		TypedQuery<C> query = getEm().createQuery(jpql, entityClass);
+		TypedQuery<E> query = getEm().createQuery(jpql, entityClass);
 		if (offset != null) query.setFirstResult(offset);
-		if (max != null) query.setMaxResults(max);	
-		return query.getSingleResult();
+		if (max != null) query.setMaxResults(max);
+		E c;
+		try{
+			c = query.getSingleResult();
+		}catch (NoResultException e){
+			c = null;
+		}		
+		return c;
 	}
 	
 	public Long countAll(){
@@ -40,12 +47,14 @@ public class BaseService<T, C> {
 		
 		TypedQuery<Long> query =  getEm().createQuery(jpql.toString(), Long.class);
 		
-		return query.getSingleResult();
-		
-		
+		try{
+			return query.getSingleResult();
+		}catch (NoResultException e){
+			return 0l;
+		}		
 	}
 
-	public List<C> findByAtribute(String atributo, String dado) {
+	public List<E> findByAtribute(String atributo, String dado) {
 
 		StringBuffer jpql = new StringBuffer();
 		jpql.append("FROM ");
@@ -56,14 +65,14 @@ public class BaseService<T, C> {
 		jpql.append(" = :atributo order by ");
 		jpql.append(atributo);
 
-		TypedQuery<C> query = getEm().createQuery(jpql.toString(), entityClass);
+		TypedQuery<E> query = getEm().createQuery(jpql.toString(), entityClass);
 		query.setParameter("atributo", dado);
 
 		return query.getResultList();
 
 	}
 
-	public C persist(C entity) {
+	public E persist(E entity) {
 		try {
 			getTransaction().begin();
 			getEm().persist(entity);
@@ -77,7 +86,7 @@ public class BaseService<T, C> {
 		return entity;
 	}
 
-	public void remove(C entity) {
+	public void remove(E entity) {
 		try {
 			getTransaction().begin();
 			getEm().remove(entity);
@@ -114,7 +123,7 @@ public class BaseService<T, C> {
 
 	}
 
-	public C update(C entity) {
+	public E update(E entity) {
 		try {
 			getTransaction().begin();
 			getEm().merge(entity);

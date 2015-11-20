@@ -1,9 +1,10 @@
-package br.com.roberto.mediaStore.gui;
+package br.com.roberto.mediaStore.gui.cadastros;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import javax.persistence.NoResultException;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -14,6 +15,9 @@ import javax.swing.SwingConstants;
 import javax.swing.text.MaskFormatter;
 
 import br.com.roberto.mediaStore.entities.Cliente;
+import br.com.roberto.mediaStore.gui.CadastroBase;
+import br.com.roberto.mediaStore.gui.LerDado;
+import br.com.roberto.mediaStore.gui.TelaConsulta;
 import br.com.roberto.mediaStore.gui.TableModels.ClienteTableModel;
 import br.com.roberto.mediaStore.services.ClienteService;
 
@@ -33,8 +37,8 @@ public class CadastroClientes extends CadastroBase {
 	private JTextField jtfNome;
 	JFormattedTextField jtfNascimento;
 	JCheckBox chckbxAtivo = new JCheckBox("Ativo");
-	
-	Integer totallivro;
+
+	Integer totalCliente;
 
 	/**
 	 * Create the frame.
@@ -68,53 +72,53 @@ public class CadastroClientes extends CadastroBase {
 		lblIsbn.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblIsbn.setBounds(22, 131, 104, 15);
 		getContentPane().add(lblIsbn);
-		
+
 		try {
 			jtfNascimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		jtfNascimento.setBounds(132, 131, 191, 19);	
-		
-		
+		jtfNascimento.setBounds(132, 131, 191, 19);
+
 		getContentPane().add(jtfNascimento);
-		
-		
+
 		chckbxAtivo.setBounds(132, 156, 129, 23);
 		getContentPane().add(chckbxAtivo);
 
 		habilitarCampos(true);
 		gotoPrimeiro();
-		totallivro = clienteService.countAll().intValue() - 1;
+		totalCliente = clienteService.countAll().intValue();
 
 	}
 
 	private void preencher(Cliente cliente) {
-		jtfCodigo.setText(cliente.getId().toString());
-		jtfNome.setText(cliente.getNome());
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		try{
-			jtfNascimento.setText(df.format(cliente.getNascimento()));
-		} catch(Exception e){jtfNascimento.setText("");}
-		chckbxAtivo.setSelected(cliente.isAtivo());		
-		
+		if (cliente != null) {
+			jtfCodigo.setText(cliente.getId().toString());
+			jtfNome.setText(cliente.getNome());
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			try {
+				jtfNascimento.setText(df.format(cliente.getNascimento()));
+			} catch (Exception e) {
+				jtfNascimento.setText("");
+			}
+			chckbxAtivo.setSelected(cliente.isAtivo());
+		}
+
 	}
 
 	@Override
 	protected void gotoPrimeiro() {
 		start = 0;
-		cliente =  clienteService.find(start, max);
+		cliente = clienteService.find(start, max);
 		preencher(cliente);
-		
-
 	}
 
 	@Override
 	protected void gotoProximo() {
-		if (start < totallivro)
+		if (start < totalCliente)
 			start += 1;
-		cliente =  clienteService.find(start, max);
+		cliente = clienteService.find(start, max);
 		preencher(cliente);
 
 	}
@@ -123,37 +127,37 @@ public class CadastroClientes extends CadastroBase {
 	protected void gotoAnterior() {
 		if (start > 0)
 			start -= 1;
-		cliente =  clienteService.find(start, max);
+		cliente = clienteService.find(start, max);
 		preencher(cliente);
 
 	}
 
 	@Override
 	protected void gotoUltimo() {
-		start = totallivro;
-		cliente =  clienteService.find(start, max);
+		start = totalCliente;
+		cliente = clienteService.find(start, max);
 		preencher(cliente);
 
 	}
 
 	@Override
 	protected void pesquisar() {
-		buscar(TelaConsulta.getInteger(this, new ClienteTableModel()).longValue());
+		ClienteTableModel tableModel = new ClienteTableModel();
+		tableModel.setService(clienteService);
+		cliente = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
+		if (cliente != null) preencher(cliente);
 	}
-	
-	private void buscar(Long id){
+
+	@Override
+	protected void vaPara() {
+		Integer id = LerDado.getInteger(this, "Codigo: ");
 		if (id != null) {
-			cliente = clienteService.findById(id);
+			cliente = clienteService.findById(id.longValue());
 			if (cliente != null)
 				preencher(cliente);
 			else
 				JOptionPane.showMessageDialog(this, "Livro não encontrado");
 		}
-	}
-
-	@Override
-	protected void vaPara() {
-		buscar(LerDado.getInteger(this, "Codigo: ").longValue());
 	}
 
 	@Override
@@ -163,47 +167,47 @@ public class CadastroClientes extends CadastroBase {
 		jtfNome.setText("");
 		jtfNascimento.setText("");
 		chckbxAtivo.setSelected(true);
-		
-	}	
+
+	}
 
 	@Override
 	protected void remover() {
 		habilitarCampos(true);
-		int op = JOptionPane.showConfirmDialog(this, "Confirma exclusão do registro?", "EXCLUSÃO", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE );
-		if (op == 0) confirmar();
+		int op = JOptionPane.showConfirmDialog(this, "Confirma exclusão do registro?", "EXCLUSÃO",
+				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		if (op == 0)
+			confirmar();
 	}
 
 	@Override
 	protected void confirmar() {
 		switch (operacao) {
 		case INCLUIR:
-			cliente = new Cliente();			
+			cliente = new Cliente();
 			atualizarLivro();
 			clienteService.persist(cliente);
 			break;
 		case ALTERAR:
-			atualizarLivro();			
+			atualizarLivro();
 			clienteService.update(cliente);
 			break;
 		case REMOVER:
 			clienteService.remove(cliente);
 			gotoAnterior();
-			break;		
+			break;
 		default:
 			break;
 		}
 		habilitarCampos(true);
 		preencher(cliente);
-		operacao = 0;		
-		totallivro = clienteService.countAll().intValue() - 1;		
+		operacao = 0;
+		totalCliente = clienteService.countAll().intValue() - 1;
 
 	}
 
 	private void atualizarLivro() {
 		cliente.setNome(jtfNome.getText());
-		
 		cliente.setAtivo(chckbxAtivo.isSelected());
-		
 		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		try {
 			cliente.setNascimento(format.parse(jtfNascimento.getText()));
@@ -211,20 +215,18 @@ public class CadastroClientes extends CadastroBase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
-		
+
 	}
 
 	@Override
 	protected void cancelar() {
 		habilitarCampos(true);
 		preencher(cliente);
-		
+
 	}
-	
-	
+
 	@Override
-	protected void habilitarCampos(boolean habilita){
+	protected void habilitarCampos(boolean habilita) {
 		super.habilitarCampos(habilita);
 		jtfCodigo.setEditable(false);
 		jtfNome.setEditable(!habilita);
