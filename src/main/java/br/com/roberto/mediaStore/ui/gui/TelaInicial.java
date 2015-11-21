@@ -1,11 +1,9 @@
-package br.com.roberto.mediaStore.gui;
+package br.com.roberto.mediaStore.ui.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -16,10 +14,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import br.com.roberto.mediaStore.gui.cadastros.CadastroAlbum;
-import br.com.roberto.mediaStore.gui.cadastros.CadastroClientes;
-import br.com.roberto.mediaStore.gui.cadastros.CadastroFilme;
-import br.com.roberto.mediaStore.gui.cadastros.CadastroLivro;
+import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroAlbum;
+import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroClientes;
+import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroEditora;
+import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroFilme;
+import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroLivro;
 import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
 public class TelaInicial extends JFrame {
@@ -107,6 +106,14 @@ public class TelaInicial extends JFrame {
 			}
 		});
 		mnNewMenu.add(mntmNewMenuItem_2);
+		
+		JMenuItem mntmEditoras = new JMenuItem("Editoras");
+		mntmEditoras.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new CadastroEditora().setVisible(true);
+			}
+		});
+		JMCadastros.add(mntmEditoras);
 		
 		JMenu JMVendas = new JMenu("Vendas");
 		menuBar.add(JMVendas);

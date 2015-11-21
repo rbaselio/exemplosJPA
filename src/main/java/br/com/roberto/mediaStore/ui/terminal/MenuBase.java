@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.ui;
+package br.com.roberto.mediaStore.ui.terminal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import br.com.roberto.mediaStore.entities.Estado;
 
 public abstract class MenuBase {
 	private static String DATE_FORMAT = "dd/MM/yyyy";
@@ -109,6 +111,19 @@ public abstract class MenuBase {
 		return valorData;
 	}
 	
+	protected Estado pedirEstado(String titulo){
+		
+		Estado estado = null;
+		do{
+			try {
+				String valorEstado = pedirString(titulo);
+				estado = Estado.valueOf(valorEstado);
+			} catch (IllegalArgumentException e) {
+				System.out.println("Estado invalido");
+			}
+		} while (estado == null);
+		return estado;
+	}
 	
 
 	public abstract void executar() throws IOException;

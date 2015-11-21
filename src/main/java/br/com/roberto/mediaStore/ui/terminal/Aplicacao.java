@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.ui;
+package br.com.roberto.mediaStore.ui.terminal;
 
 import java.io.IOException;
 
@@ -25,7 +25,8 @@ public class Aplicacao extends MenuBase{
 			throw new RuntimeException(e);
 		}
 	}
-
+	
+	
 	private void menuPrincipal() throws IOException {
 		int op;
 		do {
@@ -56,6 +57,7 @@ public class Aplicacao extends MenuBase{
 		default:
 			break;
 		}
+		
 		menuPrincipal();
 	}
 

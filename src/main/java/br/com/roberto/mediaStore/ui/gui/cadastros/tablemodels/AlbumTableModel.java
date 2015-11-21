@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.gui.TableModels;
+package br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels;
 
 import java.text.DecimalFormat;
 

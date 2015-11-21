@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.gui.cadastros;
+package br.com.roberto.mediaStore.ui.gui.cadastros;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -15,12 +15,11 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
 import br.com.roberto.mediaStore.entities.Filme;
-import br.com.roberto.mediaStore.gui.CadastroBase;
-import br.com.roberto.mediaStore.gui.LerDado;
-import br.com.roberto.mediaStore.gui.TelaConsulta;
-import br.com.roberto.mediaStore.gui.TableModels.AlbumTableModel;
-import br.com.roberto.mediaStore.gui.TableModels.FilmeTableModel;
 import br.com.roberto.mediaStore.services.produto.FilmeService;
+import br.com.roberto.mediaStore.ui.gui.CadastroBase;
+import br.com.roberto.mediaStore.ui.gui.LerDado;
+import br.com.roberto.mediaStore.ui.gui.TelaConsulta;
+import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.FilmeTableModel;
 import br.com.roberto.mediaStore.utils.TamanhoMaximo;
 
 public class CadastroFilme extends CadastroBase {

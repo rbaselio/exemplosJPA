@@ -18,7 +18,7 @@ public class BaseService<T, E> {
 	}
 
 	public List<E> findAll(Integer offset, Integer max) {
-		String jpql = "FROM " + entityClass.getSimpleName() + " ORDER BY ID" ;
+		String jpql = "FROM " + entityClass.getSimpleName() + " e ORDER BY e.id" ;
 		TypedQuery<E> query = getEm().createQuery(jpql, entityClass);
 		if (offset != null) query.setFirstResult(offset);
 		if (max != null) query.setMaxResults(max);	
@@ -26,11 +26,13 @@ public class BaseService<T, E> {
 	}
 	
 	public E find(Integer offset, Integer max) {
-		String jpql = "FROM " + entityClass.getSimpleName() + " ORDER BY ID";
+		String jpql = "FROM " + entityClass.getSimpleName() + " e ORDER BY e.id";
 		TypedQuery<E> query = getEm().createQuery(jpql, entityClass);
 		if (offset != null) query.setFirstResult(offset);
 		if (max != null) query.setMaxResults(max);
 		E c;
+		System.out.println(entityClass.getSimpleName() + offset + " - " + max);
+		
 		try{
 			c = query.getSingleResult();
 		}catch (NoResultException e){

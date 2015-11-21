@@ -1,10 +1,9 @@
-package br.com.roberto.mediaStore.gui.cadastros;
+package br.com.roberto.mediaStore.ui.gui.cadastros;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javax.persistence.NoResultException;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -15,11 +14,18 @@ import javax.swing.SwingConstants;
 import javax.swing.text.MaskFormatter;
 
 import br.com.roberto.mediaStore.entities.Cliente;
-import br.com.roberto.mediaStore.gui.CadastroBase;
-import br.com.roberto.mediaStore.gui.LerDado;
-import br.com.roberto.mediaStore.gui.TelaConsulta;
-import br.com.roberto.mediaStore.gui.TableModels.ClienteTableModel;
+import br.com.roberto.mediaStore.entities.Endereco;
+import br.com.roberto.mediaStore.entities.Estado;
 import br.com.roberto.mediaStore.services.ClienteService;
+import br.com.roberto.mediaStore.ui.gui.CadastroBase;
+import br.com.roberto.mediaStore.ui.gui.LerDado;
+import br.com.roberto.mediaStore.ui.gui.TelaConsulta;
+import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.ClienteTableModel;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import javax.swing.JComboBox;
 
 public class CadastroClientes extends CadastroBase {
 
@@ -35,10 +41,14 @@ public class CadastroClientes extends CadastroBase {
 
 	private JTextField jtfCodigo;
 	private JTextField jtfNome;
-	JFormattedTextField jtfNascimento;
-	JCheckBox chckbxAtivo = new JCheckBox("Ativo");
+	private JFormattedTextField jtfNascimento;
+	private JCheckBox chckbxAtivo = new JCheckBox("Ativo");
+	
 
-	Integer totalCliente;
+	private Integer totalCliente;
+	private JTextField jtfLogradouro;
+	private JTextField jtfCidade;
+	private JComboBox<Estado> cbEstado = new JComboBox<Estado>(Estado.values());
 
 	/**
 	 * Create the frame.
@@ -46,7 +56,7 @@ public class CadastroClientes extends CadastroBase {
 	public CadastroClientes() {
 		super();
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 521, 227);
+		setBounds(100, 100, 521, 301);
 
 		JLabel lblCdigo = new JLabel("Código:");
 		lblCdigo.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -83,8 +93,42 @@ public class CadastroClientes extends CadastroBase {
 
 		getContentPane().add(jtfNascimento);
 
-		chckbxAtivo.setBounds(132, 156, 129, 23);
+		chckbxAtivo.setBounds(331, 131, 129, 23);
 		getContentPane().add(chckbxAtivo);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "Endere\u00E7o", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(43, 158, 440, 92);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		jtfLogradouro = new JTextField();
+		jtfLogradouro.setBounds(100, 22, 328, 19);
+		panel.add(jtfLogradouro);
+		jtfLogradouro.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Rua:");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel.setBounds(12, 24, 70, 15);
+		panel.add(lblNewLabel);
+		
+		JLabel lblCidade = new JLabel("Cidade:");
+		lblCidade.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCidade.setBounds(22, 51, 70, 15);
+		panel.add(lblCidade);
+		
+		jtfCidade = new JTextField();
+		jtfCidade.setBounds(100, 51, 114, 19);
+		panel.add(jtfCidade);
+		jtfCidade.setColumns(10);
+		
+		
+		cbEstado.setBounds(299, 51, 70, 19);
+		panel.add(cbEstado);
+		
+		JLabel lblEstado = new JLabel("Estado:");
+		lblEstado.setBounds(232, 51, 70, 15);
+		panel.add(lblEstado);
 
 		habilitarCampos(true);
 		gotoPrimeiro();
@@ -103,6 +147,12 @@ public class CadastroClientes extends CadastroBase {
 				jtfNascimento.setText("");
 			}
 			chckbxAtivo.setSelected(cliente.isAtivo());
+			
+			cbEstado.setSelectedItem(cliente.getEndereco().getEstado());
+			jtfCidade.setText(cliente.getEndereco().getCidade());
+			jtfLogradouro.setText(cliente.getEndereco().getLogradouro());
+			
+			
 		}
 
 	}
@@ -166,7 +216,7 @@ public class CadastroClientes extends CadastroBase {
 		jtfCodigo.setText("");
 		jtfNome.setText("");
 		jtfNascimento.setText("");
-		chckbxAtivo.setSelected(true);
+		chckbxAtivo.setSelected(true);		
 
 	}
 
@@ -215,6 +265,11 @@ public class CadastroClientes extends CadastroBase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Endereco end = new Endereco();
+		end.setCidade(jtfCidade.getText());
+		end.setLogradouro(jtfLogradouro.getText());
+		end.setEstado((Estado) cbEstado.getSelectedItem());
+		cliente.setEndereco(end);
 
 	}
 
@@ -232,6 +287,9 @@ public class CadastroClientes extends CadastroBase {
 		jtfNome.setEditable(!habilita);
 		jtfNascimento.setEditable(!habilita);
 		chckbxAtivo.setEnabled(!habilita);
+		cbEstado.setEditable(!habilita);
+		jtfCidade.setEditable(!habilita);
+		jtfLogradouro.setEditable(!habilita);
 	}
 
 	@Override
@@ -239,3 +297,4 @@ public class CadastroClientes extends CadastroBase {
 		habilitarCampos(false);
 	}
 }
+

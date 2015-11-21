@@ -1,33 +1,45 @@
-package br.com.roberto.mediaStore.gui.cadastros;
+package br.com.roberto.mediaStore.ui.gui.cadastros;
 
+import java.awt.Color;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
+import br.com.roberto.mediaStore.entities.Editora;
 import br.com.roberto.mediaStore.entities.Livro;
-import br.com.roberto.mediaStore.gui.CadastroBase;
-import br.com.roberto.mediaStore.gui.LerDado;
-import br.com.roberto.mediaStore.gui.TelaConsulta;
-import br.com.roberto.mediaStore.gui.TableModels.ClienteTableModel;
-import br.com.roberto.mediaStore.gui.TableModels.LivroTableModel;
+import br.com.roberto.mediaStore.services.EditoraService;
 import br.com.roberto.mediaStore.services.produto.LivroService;
-import javax.swing.JFormattedTextField;
+import br.com.roberto.mediaStore.ui.gui.CadastroBase;
+import br.com.roberto.mediaStore.ui.gui.LerDado;
+import br.com.roberto.mediaStore.ui.gui.TelaConsulta;
+import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.EditoraTableModel;
+import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.LivroTableModel;
+import br.com.roberto.mediaStore.utils.TamanhoMaximo;
 
 public class CadastroLivro extends CadastroBase {
 	private static final long serialVersionUID = -5594069332447084539L;
 
 	private LivroService livroService = new LivroService();
 	private Livro livro = new Livro();
+	private EditoraService editoraService = new EditoraService();
+	private Editora editora = new Editora();
+	
 
 	private Integer max = 1;
 	private Integer start = 0;
@@ -35,8 +47,11 @@ public class CadastroLivro extends CadastroBase {
 	private JTextField jtfCodigo;
 	private JTextField jtfDescricao;
 	private JTextField jtfISBN;
-	JFormattedTextField jtfPreco = new JFormattedTextField();
-	Integer totallivro;
+	private JFormattedTextField jtfPreco = new JFormattedTextField();
+	private Integer totallivro;
+	private JTextField jtfEditoraID;
+	private JTextField jtfEditora;
+	private CadastroLivro estajanela = this;
 
 	/**
 	 * Create the frame.
@@ -44,7 +59,7 @@ public class CadastroLivro extends CadastroBase {
 	public CadastroLivro() {
 		super();
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 521, 227);
+		setBounds(100, 100, 521, 306);
 
 		JLabel lblCdigo = new JLabel("Código:");
 		lblCdigo.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -88,10 +103,63 @@ public class CadastroLivro extends CadastroBase {
 		
 		
 		getContentPane().add(jtfPreco);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "Editora", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		panel.setBounds(22, 203, 476, 63);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblCdigo_1 = new JLabel("Código:");
+		lblCdigo_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCdigo_1.setBounds(12, 22, 70, 15);
+		panel.add(lblCdigo_1);
+		
+		jtfEditoraID = new JTextField();
+		jtfEditoraID.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (jtfEditoraID.isEditable() || e.getClickCount() == 2 ) {
+					EditoraTableModel tableModel = new EditoraTableModel();
+					tableModel.setService(editoraService);
+					editora = tableModel.getEntidade(TelaConsulta.getEntidade(estajanela, tableModel));
+					livro.setEditora(editora);
+					preencher(livro);
+				}
+			}
+		});
+		jtfEditoraID.setDocument(new TamanhoMaximo(5, true));
+		jtfEditoraID.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				editora =  editoraService.findById(Long.parseLong(jtfEditoraID.getText()));
+				if (editora != null){
+					livro.setEditora(editora);
+					preencher(livro);
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "Editora não encontrado");
+				}
+			}
+		});
+		jtfEditoraID.setBounds(88, 20, 79, 19);
+		panel.add(jtfEditoraID);
+		jtfEditoraID.setColumns(10);
+		
+		JLabel lblNome = new JLabel("Nome:");
+		lblNome.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNome.setBounds(185, 22, 45, 15);
+		panel.add(lblNome);
+		
+		jtfEditora = new JTextField();
+		jtfEditora.setEditable(false);
+		jtfEditora.setBounds(240, 20, 224, 19);
+		panel.add(jtfEditora);
+		jtfEditora.setColumns(10);
 
 		habilitarCampos(true);
-		gotoPrimeiro();
-		totallivro = livroService.countAll().intValue() - 1;
+		//gotoPrimeiro();
+		totallivro = livroService.countAll().intValue();
 		
 		this.setTitle("Livros");
 
@@ -104,6 +172,11 @@ public class CadastroLivro extends CadastroBase {
 			jtfISBN.setText(livro.getISBN());
 			DecimalFormat df = new DecimalFormat("#,##0.00") ;
 			jtfPreco.setText(df.format(livro.getPreco()));
+			
+			jtfEditora.setText(livro.getEditora().getNomeEditora());
+			
+			
+			jtfEditoraID.setText(livro.getEditora().getId().toString());
 		}
 	}
 
@@ -144,14 +217,10 @@ public class CadastroLivro extends CadastroBase {
 
 	@Override
 	protected void pesquisar() {
-		
 		LivroTableModel tableModel = new LivroTableModel();
 		tableModel.setService(livroService);
 		livro = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
 		preencher(livro);
-		
-		
-
 	}
 
 	
@@ -240,7 +309,8 @@ public class CadastroLivro extends CadastroBase {
 		jtfCodigo.setEditable(false);
 		jtfDescricao.setEditable(!habilita);
 		jtfISBN.setEditable(!habilita);
-		jtfPreco.setEditable(!habilita);		
+		jtfPreco.setEditable(!habilita);
+		jtfEditoraID.setEditable(!habilita);
 	}
 
 	@Override

@@ -1,10 +1,9 @@
-package br.com.roberto.mediaStore.gui.TableModels;
+package br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import br.com.roberto.mediaStore.entities.Cliente;
-import br.com.roberto.mediaStore.services.BaseService;
 
 public class ClienteTableModel extends BaseTableModel<Cliente>{
 	

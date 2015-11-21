@@ -3,12 +3,17 @@ package br.com.roberto.mediaStore.entities;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "tipo_produto")
 public class Produto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

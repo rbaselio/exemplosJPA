@@ -1,10 +1,12 @@
-package br.com.roberto.mediaStore.ui;
+package br.com.roberto.mediaStore.ui.terminal;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 import br.com.roberto.mediaStore.entities.Cliente;
+import br.com.roberto.mediaStore.entities.Endereco;
+import br.com.roberto.mediaStore.entities.Estado;
 import br.com.roberto.mediaStore.services.ClienteService;
 
 public class MenuClientes extends MenuBase {
@@ -41,6 +43,7 @@ public class MenuClientes extends MenuBase {
 			alterarCliente();
 			break;
 		case '4':
+			listarPorEstado();
 			break;
 		case '5':
 			removerCliente();
@@ -48,6 +51,17 @@ public class MenuClientes extends MenuBase {
 		default:
 			break;
 		}
+	}
+
+	private void listarPorEstado() {
+		limparTela();
+		Estado estado = pedirEstado("Digite o estado: ");
+		List<Cliente> todosClientes = clienteService.findByEstado(estado);
+		for (Cliente pessoa : todosClientes) {
+			System.out.println(pessoa);
+
+		}
+		
 	}
 
 	private void removerCliente() {
@@ -79,12 +93,25 @@ public class MenuClientes extends MenuBase {
 
 	private void insereClinte() {
 		limparTela();
+		//endereço
+		Endereco end = new Endereco();
+		
+		String logradouro = pedirString("Digite o endereço: ");
+		String cidade = pedirString("Digite a cidade: ");
+		Estado estado = pedirEstado("Digite o estado: ");
+		
+		end.setCidade(cidade);
+		end.setLogradouro(logradouro);
+		end.setEstado(estado);
+		
+		//cliente
 		String nome = pedirString("Digite o nome: ");
 		Date nascimento = pedirData("Digite o nascimento:(dd/mm/aaaa) ");
-
+		
 		c1.setNome(nome);
 		c1.setNascimento(nascimento);
 		c1.setAtivo(true);
+		c1.setEndereco(end);
 		clienteService.persist(c1);
 
 	}
@@ -92,7 +119,6 @@ public class MenuClientes extends MenuBase {
 	private void consultarClintePorNome() {
 		limparTela();
 		String nome = pedirString("Digite o nome: ");
-		ClienteService clienteService = new ClienteService();
 		List<Cliente> todosClientes = clienteService.findByNome(nome);
 		for (Cliente pessoa : todosClientes) {
 			System.out.println(pessoa);

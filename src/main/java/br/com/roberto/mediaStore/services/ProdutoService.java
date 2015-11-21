@@ -1,21 +1,12 @@
 package br.com.roberto.mediaStore.services;
 
-import java.util.List;
+import br.com.roberto.mediaStore.entities.Produto;
 
-import javax.persistence.TypedQuery;
-
-public class ProdutoService<C> extends BaseService<Long, C> {
-
-	public List<C> findByDescricao(String descricao) {
-		StringBuilder builder = new StringBuilder("FROM ");
-		builder.append(entityClass.getSimpleName());
-		builder.append(" c ");
-		builder.append(" WHERE UPPER(c.descricao) LIKE UPPER(:descricao)");
-		builder.append(" ORDER BY c.descricao");
-
-		TypedQuery<C> query = getEm().createQuery(builder.toString(), entityClass);
-		query.setParameter("descricao", "%" + descricao + "%");
-		return query.getResultList();
+public class ProdutoService extends BaseService<Long, Produto> {
+	
+	public ProdutoService() {
+		this.entityClass = Produto.class;
 	}
+
 
 }

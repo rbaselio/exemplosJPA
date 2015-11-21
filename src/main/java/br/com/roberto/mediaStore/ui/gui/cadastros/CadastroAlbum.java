@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.gui.cadastros;
+package br.com.roberto.mediaStore.ui.gui.cadastros;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -15,11 +15,11 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
 import br.com.roberto.mediaStore.entities.Album;
-import br.com.roberto.mediaStore.gui.CadastroBase;
-import br.com.roberto.mediaStore.gui.LerDado;
-import br.com.roberto.mediaStore.gui.TelaConsulta;
-import br.com.roberto.mediaStore.gui.TableModels.AlbumTableModel;
 import br.com.roberto.mediaStore.services.produto.AlbumService;
+import br.com.roberto.mediaStore.ui.gui.CadastroBase;
+import br.com.roberto.mediaStore.ui.gui.LerDado;
+import br.com.roberto.mediaStore.ui.gui.TelaConsulta;
+import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.AlbumTableModel;
 import br.com.roberto.mediaStore.utils.TamanhoMaximo;
 
 public class CadastroAlbum extends CadastroBase {
@@ -93,6 +93,7 @@ public class CadastroAlbum extends CadastroBase {
 		habilitarCampos(true);
 		gotoPrimeiro();
 		totalalbum = albumService.countAll().intValue();
+		
 		
 		this.setTitle("Albums");
 

@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.gui;
+package br.com.roberto.mediaStore.ui.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.gui;
+package br.com.roberto.mediaStore.ui.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

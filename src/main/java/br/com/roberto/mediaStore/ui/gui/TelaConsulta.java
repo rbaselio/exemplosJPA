@@ -1,4 +1,4 @@
-package br.com.roberto.mediaStore.gui;
+package br.com.roberto.mediaStore.ui.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -17,7 +17,7 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 
-import br.com.roberto.mediaStore.gui.TableModels.BaseTableModel;
+import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.BaseTableModel;
 
 public class TelaConsulta extends JDialog {	/**
 	 * 
@@ -33,6 +33,7 @@ public class TelaConsulta extends JDialog {	/**
 
 	private static TelaConsulta instance;
 
+	@SuppressWarnings("rawtypes")
 	public static Integer getEntidade(JFrame pai, BaseTableModel models) {
 		start = 0;
 		max = 10;
