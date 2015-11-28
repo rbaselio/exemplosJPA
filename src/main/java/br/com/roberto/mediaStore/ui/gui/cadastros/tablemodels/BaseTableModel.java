@@ -1,6 +1,7 @@
 package br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -35,6 +36,12 @@ public abstract class BaseTableModel<E> extends AbstractTableModel{
 	public void buscarLista(Integer start, Integer max) {
 		entityList = service.findAll(start, max); 		
     }	
+	
+	public void buscarLista(Map<String,Object> dados, Integer start, Integer max) {
+		entityList = service.findByAtribute(dados, start, max); 		
+    }
+	
+	
 		
 	public int getRowCount() {
 		return entityList.size();

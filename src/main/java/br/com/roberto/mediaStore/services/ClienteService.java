@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.TypedQuery;
 
 import br.com.roberto.mediaStore.entities.Cliente;
-import br.com.roberto.mediaStore.entities.Estado;
+import br.com.roberto.mediaStore.utils.Estado;
 
 public class ClienteService extends BaseService<Long, Cliente> {
 

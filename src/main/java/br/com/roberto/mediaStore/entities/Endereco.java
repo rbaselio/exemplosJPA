@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import br.com.roberto.mediaStore.utils.Estado;
+
 @Entity
 public class Endereco {
 	

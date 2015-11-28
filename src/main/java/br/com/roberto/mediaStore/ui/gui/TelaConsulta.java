@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -29,17 +30,19 @@ public class TelaConsulta extends JDialog {	/**
 	private static BaseTableModel<?> model;
 	private static Integer start;
 	private static Integer max;
-	
-
 	private static TelaConsulta instance;
+	private static Map<String, Object> param;
 
 	@SuppressWarnings("rawtypes")
-	public static Integer getEntidade(JFrame pai, BaseTableModel models) {
+	public static Integer getEntidade(JFrame pai, BaseTableModel models, Map<String, Object> dados) {
 		start = 0;
 		max = 10;
 		model = models;
+		param = dados;
 		
-		model.buscarLista(start, max);
+		if (param != null) model.buscarLista(param, start, max);
+		else model.buscarLista(start, max);		
+		
 		table.setModel(model);
 		table.updateUI();	
 		
@@ -49,10 +52,7 @@ public class TelaConsulta extends JDialog {	/**
 		instance.setLocationRelativeTo(pai);
 		instance.setTitle("Clique sobre a linha desejado");
 		instance.setModal(true);
-		instance.setVisible(true);
-		
-		
-		
+		instance.setVisible(true);		
 
 		try {
 			return retorno;
@@ -105,7 +105,9 @@ public class TelaConsulta extends JDialog {	/**
 		btnPginaAnterior.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (start > 0) start -= max;
-				model.buscarLista(start, max);
+				
+				if (param != null) model.buscarLista(param, start, max);
+				else model.buscarLista(start, max);	
 				table.updateUI();
 				alinhar();
 			}
@@ -117,7 +119,8 @@ public class TelaConsulta extends JDialog {	/**
 			public void actionPerformed(ActionEvent e) {
 				if (table.getRowCount() >= max){
 					start += max;
-					model.buscarLista(start, max);
+					if (param != null) model.buscarLista(param, start, max);
+					else model.buscarLista(start, max);						
 					table.updateUI();
 					alinhar();
 				}

@@ -1,25 +1,37 @@
 package br.com.roberto.mediaStore.ui.gui.cadastros;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
 import br.com.roberto.mediaStore.entities.Album;
+import br.com.roberto.mediaStore.entities.Musica;
 import br.com.roberto.mediaStore.services.produto.AlbumService;
 import br.com.roberto.mediaStore.ui.gui.CadastroBase;
 import br.com.roberto.mediaStore.ui.gui.LerDado;
 import br.com.roberto.mediaStore.ui.gui.TelaConsulta;
 import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.AlbumTableModel;
+import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.MusicasTableModel;
 import br.com.roberto.mediaStore.utils.TamanhoMaximo;
 
 public class CadastroAlbum extends CadastroBase {
@@ -27,6 +39,8 @@ public class CadastroAlbum extends CadastroBase {
 
 	private AlbumService albumService = new AlbumService();
 	private Album album = new Album();
+	private List<Musica> musicas;
+	MusicasTableModel musicasModel;
 
 	private Integer max = 1;
 	private Integer start = 0;
@@ -34,8 +48,14 @@ public class CadastroAlbum extends CadastroBase {
 	private JTextField jtfCodigo;
 	private JTextField jtfDescricao;
 	private JTextField jtfFaixas;
+	private JButton btnAddMusica = new JButton("");
+	private JButton btnRemoveMusica = new JButton("");
+	private JFrame estajanela;
+
 	JFormattedTextField jtfPreco = new JFormattedTextField();
+
 	Integer totalalbum;
+	private JTable table;
 
 	/**
 	 * Create the frame.
@@ -43,7 +63,7 @@ public class CadastroAlbum extends CadastroBase {
 	public CadastroAlbum() {
 		super();
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 521, 215);
+		setBounds(100, 100, 521, 390);
 
 		JLabel lblCdigo = new JLabel("Código:");
 		lblCdigo.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -71,54 +91,105 @@ public class CadastroAlbum extends CadastroBase {
 		getContentPane().add(lblIsbn);
 
 		jtfFaixas = new JTextField();
+		jtfFaixas.setEditable(false);
 		jtfFaixas.setColumns(10);
 		jtfFaixas.setBounds(101, 129, 103, 19);
 		jtfFaixas.setDocument(new TamanhoMaximo(2, true));
 		getContentPane().add(jtfFaixas);
-		
+
 		JLabel lblPreo = new JLabel("Preço:");
 		lblPreo.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblPreo.setBounds(22, 158, 70, 15);
 		getContentPane().add(lblPreo);
-		
-		
+
 		jtfPreco.setBounds(101, 156, 140, 19);
-		jtfPreco.setFormatterFactory(new DefaultFormatterFactory(
-                new NumberFormatter(new DecimalFormat("#,##0.00"))));
-		
-		
+		jtfPreco.setFormatterFactory(new DefaultFormatterFactory(new NumberFormatter(new DecimalFormat("#,##0.00"))));
+
 		getContentPane().add(jtfPreco);
-		
+
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(12, 185, 482, 173);
+		getContentPane().add(tabbedPane);
+
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("Musicas", null, panel, null);
+		panel.setLayout(null);
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(12, 12, 419, 111);
+		panel.add(scrollPane);
+
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		btnAddMusica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				musicasModel = MusicasAlbum.setMusicas(estajanela, table, musicasModel);
+				atualizarAlbum();
+				preencher(album);		
+				
+			}
+		});
+
+		btnAddMusica.setBounds(443, 12, 34, 34);
+		btnAddMusica.setToolTipText("Primeiro Registro");
+		btnAddMusica.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/plus.png")));
+		panel.add(btnAddMusica);
+		btnRemoveMusica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				musicas = album.getMusicas();
+				musicas.remove(musicasModel.removeValueAt(table.getSelectedRow()));
+				atualizarAlbum();
+				preencher(album);
+
+			}
+		});
+
+		btnRemoveMusica.setBounds(443, 45, 34, 34);
+		btnRemoveMusica.setToolTipText("Primeiro Registro");
+		btnRemoveMusica.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/minus.png")));
+
+		panel.add(btnRemoveMusica);
 
 		habilitarCampos(true);
-		gotoPrimeiro();
 		totalalbum = albumService.countAll().intValue();
-		
-		
+		estajanela = this;
 		this.setTitle("Albums");
+		gotoPrimeiro();
 
 	}
 
 	private void preencher(Album album) {
-		if (album != null){
-			jtfCodigo.setText(album.getId().toString());
+		if (album != null) {
+			try {
+				jtfCodigo.setText(album.getId().toString());
+			} catch (Exception e) {
+				
+			}			
 			jtfDescricao.setText(album.getDescricao());
 			jtfFaixas.setText(album.getFaixas().toString());
-			DecimalFormat df = new DecimalFormat("#,##0.00") ;
+			DecimalFormat df = new DecimalFormat("#,##0.00");
 			jtfPreco.setText(df.format(album.getPreco()));
+			musicasModel = new MusicasTableModel(album.getMusicas());
+			
+			table.setModel(musicasModel);
+			table.updateUI();
+			
+		} else{
+			musicasModel = new MusicasTableModel(new ArrayList<Musica>());
+			table.setModel(musicasModel);
+			table.updateUI();
 		}
-		
+
 	}
 
 	@Override
 	protected void gotoPrimeiro() {
 		start = 0;
-		try{
-		album =  albumService.find(start, max);
-		preencher(album);
-		}catch(Exception e){}
-		
-		
+		try {
+			album = albumService.find(start, max);
+			preencher(album);
+		} catch (Exception e) {
+		}
 
 	}
 
@@ -126,7 +197,7 @@ public class CadastroAlbum extends CadastroBase {
 	protected void gotoProximo() {
 		if (start < totalalbum)
 			start += 1;
-		album =  albumService.find(start, max);
+		album = albumService.find(start, max);
 		preencher(album);
 
 	}
@@ -135,7 +206,7 @@ public class CadastroAlbum extends CadastroBase {
 	protected void gotoAnterior() {
 		if (start > 0)
 			start -= 1;
-		album =  albumService.find(start, max);
+		album = albumService.find(start, max);
 		preencher(album);
 
 	}
@@ -143,19 +214,18 @@ public class CadastroAlbum extends CadastroBase {
 	@Override
 	protected void gotoUltimo() {
 		start = totalalbum;
-		album =  albumService.find(start, max);
+		album = albumService.find(start, max);
 		preencher(album);
 
 	}
 
 	@Override
-	protected void pesquisar() {		
+	protected void pesquisar() {
 		AlbumTableModel tableModel = new AlbumTableModel();
 		tableModel.setService(albumService);
-		album = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
+		album = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel, null));
 		preencher(album);
 	}
-	
 
 	@Override
 	protected void vaPara() {
@@ -171,80 +241,88 @@ public class CadastroAlbum extends CadastroBase {
 
 	@Override
 	protected void incluir() {
-		habilitarCampos(false);		
-		limpar();		
+		habilitarCampos(false);
+		limpar();
+		album = new Album();
+		table.updateUI();
+
 	}
 
 	private void limpar() {
 		jtfCodigo.setText("");
 		jtfDescricao.setText("");
 		jtfFaixas.setText("");
-		jtfPreco.setText("");
-	}	
+		jtfPreco.setText("0,00");
+		if (musicasModel != null)
+			musicasModel.limparMusicList();
+		table.updateUI();
+	}
 
 	@Override
 	protected void remover() {
 		habilitarCampos(true);
 		limpar();
-		int op = JOptionPane.showConfirmDialog(this, "Confirma exclusão do registro?", "EXCLUSÃO", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE );
-		if (op == 0) confirmar();
+		int op = JOptionPane.showConfirmDialog(this, "Confirma exclusão do registro?", "EXCLUSÃO",
+				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		if (op == 0)
+			confirmar();
 	}
 
 	@Override
 	protected void confirmar() {
 		switch (operacao) {
 		case INCLUIR:
-			album = new Album();			
 			atualizarAlbum();
 			albumService.persist(album);
 			break;
 		case ALTERAR:
-			atualizarAlbum();			
+			atualizarAlbum();
 			albumService.update(album);
 			break;
 		case REMOVER:
 			albumService.remove(album);
 			gotoAnterior();
-			break;		
+			break;
 		default:
 			break;
 		}
 		habilitarCampos(true);
 		preencher(album);
-		operacao = 0;		
-		totalalbum = albumService.countAll().intValue() - 1;		
+		operacao = 0;
+		totalalbum = albumService.countAll().intValue() - 1;
 
 	}
 
 	private void atualizarAlbum() {
 		album.setDescricao(jtfDescricao.getText());
-		album.setFaixas(Integer.parseInt(jtfFaixas.getText()));	
+		album.setMusicas(musicasModel.getMusicList());
 		try {
 			String numberToFormat = jtfPreco.getText();
-	        NumberFormat formatter = NumberFormat.getNumberInstance();
-	        Number number = formatter.parse(numberToFormat);
+			NumberFormat formatter = NumberFormat.getNumberInstance();
+			Number number = formatter.parse(numberToFormat);
 			BigDecimal decimal = BigDecimal.valueOf(number.doubleValue());
 			album.setPreco(decimal);
-		} catch (ParseException e) {				
+		} catch (ParseException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	@Override
 	protected void cancelar() {
 		habilitarCampos(true);
 		preencher(album);
-		
+
 	}
-	
-	
+
 	@Override
-	protected void habilitarCampos(boolean habilita){
+	protected void habilitarCampos(boolean habilita) {
 		super.habilitarCampos(habilita);
 		jtfCodigo.setEditable(false);
 		jtfDescricao.setEditable(!habilita);
-		jtfFaixas.setEditable(!habilita);
+		table.setEnabled(!habilita);
 		jtfPreco.setEditable(!habilita);
+		btnAddMusica.setEnabled(!habilita);
+		btnRemoveMusica.setEnabled(!habilita);
 	}
 
 	@Override

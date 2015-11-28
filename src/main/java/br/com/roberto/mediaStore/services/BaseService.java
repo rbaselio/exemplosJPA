@@ -1,6 +1,7 @@
 package br.com.roberto.mediaStore.services;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -31,8 +32,6 @@ public class BaseService<T, E> {
 		if (offset != null) query.setFirstResult(offset);
 		if (max != null) query.setMaxResults(max);
 		E c;
-		System.out.println(entityClass.getSimpleName() + offset + " - " + max);
-		
 		try{
 			c = query.getSingleResult();
 		}catch (NoResultException e){
@@ -54,24 +53,6 @@ public class BaseService<T, E> {
 		}catch (NoResultException e){
 			return 0l;
 		}		
-	}
-
-	public List<E> findByAtribute(String atributo, String dado) {
-
-		StringBuffer jpql = new StringBuffer();
-		jpql.append("FROM ");
-		jpql.append(entityClass.getSimpleName());
-		jpql.append(" en");
-		jpql.append(" where en.");
-		jpql.append(atributo);
-		jpql.append(" = :atributo order by ");
-		jpql.append(atributo);
-
-		TypedQuery<E> query = getEm().createQuery(jpql.toString(), entityClass);
-		query.setParameter("atributo", dado);
-
-		return query.getResultList();
-
 	}
 
 	public E persist(E entity) {
@@ -145,6 +126,32 @@ public class BaseService<T, E> {
 
 	public EntityTransaction getTransaction() {
 		return getEm().getTransaction();
+	}
+	
+	
+	int interacao = 0;
+	public List<E> findByAtribute(Map<String, Object> dados, Integer start, Integer max) {
+		StringBuffer jpql =  new StringBuffer("Select en FROM ");
+		jpql.append(entityClass.getSimpleName());
+		jpql.append(" en WHERE ");		
+		
+		for (String key : dados.keySet()) { 
+			jpql.append( " en.");
+			jpql.append(key);
+			jpql.append(" = :");
+			jpql.append(key);
+			interacao++;
+			if (interacao < dados.size()) jpql.append(" AND ");			
+			
+		}
+		TypedQuery<E> query = getEm().createQuery(jpql.toString(), entityClass);
+
+		for (String key : dados.keySet()) { 
+			query.setParameter(key, dados.get(key));
+			
+		}
+
+		return query.getResultList();
 	}
 
 }

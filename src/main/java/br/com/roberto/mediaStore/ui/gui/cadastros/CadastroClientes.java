@@ -1,31 +1,31 @@
 package br.com.roberto.mediaStore.ui.gui.cadastros;
 
+import java.awt.Color;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.MaskFormatter;
 
 import br.com.roberto.mediaStore.entities.Cliente;
 import br.com.roberto.mediaStore.entities.Endereco;
-import br.com.roberto.mediaStore.entities.Estado;
 import br.com.roberto.mediaStore.services.ClienteService;
 import br.com.roberto.mediaStore.ui.gui.CadastroBase;
 import br.com.roberto.mediaStore.ui.gui.LerDado;
 import br.com.roberto.mediaStore.ui.gui.TelaConsulta;
 import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.ClienteTableModel;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import javax.swing.JComboBox;
+import br.com.roberto.mediaStore.utils.Estado;
 
 public class CadastroClientes extends CadastroBase {
 
@@ -49,7 +49,8 @@ public class CadastroClientes extends CadastroBase {
 	private JTextField jtfLogradouro;
 	private JTextField jtfCidade;
 	private JComboBox<Estado> cbEstado = new JComboBox<Estado>(Estado.values());
-
+	//private JComboBox cbEstado = new JComboBox(Estado.values());
+	
 	/**
 	 * Create the frame.
 	 */
@@ -86,7 +87,6 @@ public class CadastroClientes extends CadastroBase {
 		try {
 			jtfNascimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		jtfNascimento.setBounds(132, 131, 191, 19);
@@ -103,31 +103,31 @@ public class CadastroClientes extends CadastroBase {
 		panel.setLayout(null);
 		
 		jtfLogradouro = new JTextField();
-		jtfLogradouro.setBounds(100, 22, 328, 19);
+		jtfLogradouro.setBounds(79, 22, 349, 19);
 		panel.add(jtfLogradouro);
 		jtfLogradouro.setColumns(10);
 		
 		JLabel lblNewLabel = new JLabel("Rua:");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel.setBounds(12, 24, 70, 15);
+		lblNewLabel.setBounds(28, 24, 42, 15);
 		panel.add(lblNewLabel);
 		
 		JLabel lblCidade = new JLabel("Cidade:");
 		lblCidade.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCidade.setBounds(22, 51, 70, 15);
+		lblCidade.setBounds(12, 51, 60, 15);
 		panel.add(lblCidade);
 		
 		jtfCidade = new JTextField();
-		jtfCidade.setBounds(100, 51, 114, 19);
+		jtfCidade.setBounds(79, 53, 114, 19);
 		panel.add(jtfCidade);
 		jtfCidade.setColumns(10);
 		
 		
-		cbEstado.setBounds(299, 51, 70, 19);
+		cbEstado.setBounds(272, 53, 156, 19);
 		panel.add(cbEstado);
 		
 		JLabel lblEstado = new JLabel("Estado:");
-		lblEstado.setBounds(232, 51, 70, 15);
+		lblEstado.setBounds(211, 53, 61, 15);
 		panel.add(lblEstado);
 
 		habilitarCampos(true);
@@ -194,7 +194,7 @@ public class CadastroClientes extends CadastroBase {
 	protected void pesquisar() {
 		ClienteTableModel tableModel = new ClienteTableModel();
 		tableModel.setService(clienteService);
-		cliente = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
+		cliente = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel, null));
 		if (cliente != null) preencher(cliente);
 	}
 
@@ -287,7 +287,7 @@ public class CadastroClientes extends CadastroBase {
 		jtfNome.setEditable(!habilita);
 		jtfNascimento.setEditable(!habilita);
 		chckbxAtivo.setEnabled(!habilita);
-		cbEstado.setEditable(!habilita);
+		cbEstado.setEnabled(!habilita);
 		jtfCidade.setEditable(!habilita);
 		jtfLogradouro.setEditable(!habilita);
 	}

@@ -83,37 +83,40 @@ public class TelaInicial extends JFrame {
 		JMenu mnNewMenu = new JMenu("Produtos");
 		JMCadastros.add(mnNewMenu);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Livros");
-		mntmNewMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new CadastroLivro().setVisible(true);
-			}
-		});
-		mnNewMenu.add(mntmNewMenuItem);
-		
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Album");
-		mntmNewMenuItem_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new CadastroAlbum().setVisible(true);
-			}
-		});
-		mnNewMenu.add(mntmNewMenuItem_1);
-		
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Filmes");
 		mntmNewMenuItem_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new CadastroFilme().setVisible(true);
 			}
 		});
-		mnNewMenu.add(mntmNewMenuItem_2);
+		
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Album");
+		mnNewMenu.add(mntmNewMenuItem_1);
+		mntmNewMenuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new CadastroAlbum().setVisible(true);
+			}
+		});
+		
+		JMenu mnLivros = new JMenu("Livros");
+		mnNewMenu.add(mnLivros);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Livros");
+		mnLivros.add(mntmNewMenuItem);
 		
 		JMenuItem mntmEditoras = new JMenuItem("Editoras");
+		mnLivros.add(mntmEditoras);
 		mntmEditoras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new CadastroEditora().setVisible(true);
 			}
 		});
-		JMCadastros.add(mntmEditoras);
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new CadastroLivro().setVisible(true);
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem_2);
 		
 		JMenu JMVendas = new JMenu("Vendas");
 		menuBar.add(JMVendas);

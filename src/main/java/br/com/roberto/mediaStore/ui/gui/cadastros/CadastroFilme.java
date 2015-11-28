@@ -154,7 +154,7 @@ public class CadastroFilme extends CadastroBase {
 	protected void pesquisar() {
 		FilmeTableModel tableModel = new FilmeTableModel();
 		tableModel.setService(filmeService);
-		filme = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
+		filme = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel, null));
 		preencher(filme);
 		
 	}

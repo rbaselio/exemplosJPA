@@ -1,6 +1,7 @@
 package br.com.roberto.mediaStore.ui.terminal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -80,7 +81,7 @@ public class MenuAlbum extends MenuBase {
 		album.setDescricao(pedirString("Digite a descrição do Album: "));
 		album.setPreco(pedirValor("Digite o valor do álbum: "));
 		
-		Set<Musica> musicas = new HashSet<Musica>();
+		List<Musica> musicas = new ArrayList<Musica>();
 		do{
 			String nomeMusica = pedirString("Digite o nome da musica");
 			Integer duracao = pedirInteiro("Duracao da Musica");

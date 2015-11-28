@@ -6,8 +6,8 @@ import java.util.List;
 
 import br.com.roberto.mediaStore.entities.Cliente;
 import br.com.roberto.mediaStore.entities.Endereco;
-import br.com.roberto.mediaStore.entities.Estado;
 import br.com.roberto.mediaStore.services.ClienteService;
+import br.com.roberto.mediaStore.utils.Estado;
 
 public class MenuClientes extends MenuBase {
 	Cliente c1 = new Cliente();
@@ -59,9 +59,7 @@ public class MenuClientes extends MenuBase {
 		List<Cliente> todosClientes = clienteService.findByEstado(estado);
 		for (Cliente pessoa : todosClientes) {
 			System.out.println(pessoa);
-
-		}
-		
+		}		
 	}
 
 	private void removerCliente() {

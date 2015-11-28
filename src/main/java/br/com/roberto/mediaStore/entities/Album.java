@@ -1,5 +1,6 @@
 package br.com.roberto.mediaStore.entities;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,9 +19,10 @@ public class Album extends Produto{
 	
 	@JoinColumn(name = "album_id")
 	@OneToMany (cascade = CascadeType.ALL)
-	private Set<Musica> musicas;
+	private List<Musica> musicas;
 
 	public Integer getFaixas() {
+		if(musicas != null) return 0;
 		return musicas.size();
 	}
 
@@ -28,13 +30,13 @@ public class Album extends Produto{
 		this.faixas = faixas;
 	}		
 
-	public Set<Musica> getMusicas() {
+	public List<Musica> getMusicas() {
 		return musicas;
 	}
 
-	public void setMusicas(Set<Musica> musicas) {
-		this.musicas = musicas;
-		setFaixas(musicas.size());
+	public void setMusicas(List<Musica> list) {
+		this.musicas = list;
+		setFaixas(list.size());
 	}
 
 		

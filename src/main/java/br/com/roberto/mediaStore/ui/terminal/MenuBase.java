@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import br.com.roberto.mediaStore.entities.Estado;
+import br.com.roberto.mediaStore.utils.Estado;
 
 public abstract class MenuBase {
 	private static String DATE_FORMAT = "dd/MM/yyyy";

@@ -110,7 +110,7 @@ public class CadastroEditora extends CadastroBase {
 		EditoraTableModel tableModel = new EditoraTableModel();
 		tableModel.setService(editoraService);
 		try {
-			editora = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
+			editora = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel, null));
 			preencher(editora);
 		} catch (NullPointerException e) {
 

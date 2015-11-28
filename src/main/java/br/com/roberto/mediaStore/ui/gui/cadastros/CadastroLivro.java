@@ -1,6 +1,8 @@
 package br.com.roberto.mediaStore.ui.gui.cadastros;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -9,7 +11,11 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,7 +45,6 @@ public class CadastroLivro extends CadastroBase {
 	private Livro livro = new Livro();
 	private EditoraService editoraService = new EditoraService();
 	private Editora editora = new Editora();
-	
 
 	private Integer max = 1;
 	private Integer start = 0;
@@ -59,7 +64,7 @@ public class CadastroLivro extends CadastroBase {
 	public CadastroLivro() {
 		super();
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 521, 306);
+		setBounds(100, 100, 521, 324);
 
 		JLabel lblCdigo = new JLabel("Código:");
 		lblCdigo.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -106,7 +111,7 @@ public class CadastroLivro extends CadastroBase {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Editora", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		panel.setBounds(22, 203, 476, 63);
+		panel.setBounds(22, 203, 476, 90);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -122,7 +127,7 @@ public class CadastroLivro extends CadastroBase {
 				if (jtfEditoraID.isEditable() || e.getClickCount() == 2 ) {
 					EditoraTableModel tableModel = new EditoraTableModel();
 					tableModel.setService(editoraService);
-					editora = tableModel.getEntidade(TelaConsulta.getEntidade(estajanela, tableModel));
+					editora = tableModel.getEntidade(TelaConsulta.getEntidade(estajanela, tableModel, null));
 					livro.setEditora(editora);
 					preencher(livro);
 				}
@@ -133,14 +138,17 @@ public class CadastroLivro extends CadastroBase {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				editora =  editoraService.findById(Long.parseLong(jtfEditoraID.getText()));
+					
 				if (editora != null){
 					livro.setEditora(editora);
-					preencher(livro);
+					preencher(editora);
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Editora não encontrado");
 				}
 			}
+
+			
 		});
 		jtfEditoraID.setBounds(88, 20, 79, 19);
 		panel.add(jtfEditoraID);
@@ -156,36 +164,77 @@ public class CadastroLivro extends CadastroBase {
 		jtfEditora.setBounds(240, 20, 224, 19);
 		panel.add(jtfEditora);
 		jtfEditora.setColumns(10);
+		
+		JButton btnMaisLivrosDesta = new JButton("Livros desta editora?");
+		btnMaisLivrosDesta.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				editora = editoraService.findById(Long.parseLong(jtfEditoraID.getText()));
+				
+				if (editora != null){
+					Map<String,Object> dados = new HashMap<String,Object>();
+					dados.put( "editora", editora);
+					LivroTableModel tableModel = new LivroTableModel();
+					tableModel.setService(livroService);
+					try {
+						livro = tableModel.getEntidade(TelaConsulta.getEntidade(estajanela, tableModel, dados));
+						preencher(livro);
+					} catch (Exception e2) {
+
+					}
+												
+				}	
+				
+			}
+		});
+		btnMaisLivrosDesta.setBounds(240, 51, 224, 25);
+		btnMaisLivrosDesta.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/find.png")));
+		panel.add(btnMaisLivrosDesta);
 
 		habilitarCampos(true);
 		//gotoPrimeiro();
 		totallivro = livroService.countAll().intValue();
 		
 		this.setTitle("Livros");
+		gotoPrimeiro();
 
 	}
 
 	private void preencher(Livro livro) {
-		if (livro != null){
+		limpar();
+		if (livro != null) {
 			jtfCodigo.setText(livro.getId().toString());
 			jtfDescricao.setText(livro.getDescricao());
 			jtfISBN.setText(livro.getISBN());
-			DecimalFormat df = new DecimalFormat("#,##0.00") ;
+			DecimalFormat df = new DecimalFormat("#,##0.00");
 			jtfPreco.setText(df.format(livro.getPreco()));
+			preencher(livro.getEditora());
 			
+		}
+	}
+	
+	private void preencher(Editora editora) {
+		if (editora != null) {
 			jtfEditora.setText(livro.getEditora().getNomeEditora());
-			
-			
 			jtfEditoraID.setText(livro.getEditora().getId().toString());
 		}
+		
+	}
+
+	private void limpar() {
+		jtfCodigo.setText("");
+		jtfDescricao.setText("");
+		jtfISBN.setText("");
+		jtfPreco.setText("");
+		jtfEditora.setText("");
+		jtfEditoraID.setText("");
+
 	}
 
 	@Override
 	protected void gotoPrimeiro() {
 		start = 0;
-		livro =  livroService.find(start, max);
+		livro = livroService.find(start, max);
 		preencher(livro);
-		
 
 	}
 
@@ -193,7 +242,7 @@ public class CadastroLivro extends CadastroBase {
 	protected void gotoProximo() {
 		if (start < totallivro)
 			start += 1;
-		livro =  livroService.find(start, max);
+		livro = livroService.find(start, max);
 		preencher(livro);
 
 	}
@@ -202,15 +251,15 @@ public class CadastroLivro extends CadastroBase {
 	protected void gotoAnterior() {
 		if (start > 0)
 			start -= 1;
-		livro =  livroService.find(start, max);
+		livro = livroService.find(start, max);
 		preencher(livro);
 
 	}
 
 	@Override
 	protected void gotoUltimo() {
-		start = totallivro;
-		livro =  livroService.find(start, max);
+		start = totallivro - 1;
+		livro = livroService.find(start, max);
 		preencher(livro);
 
 	}
@@ -219,11 +268,10 @@ public class CadastroLivro extends CadastroBase {
 	protected void pesquisar() {
 		LivroTableModel tableModel = new LivroTableModel();
 		tableModel.setService(livroService);
-		livro = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel));
+
+		livro = tableModel.getEntidade(TelaConsulta.getEntidade(this, tableModel, null));
 		preencher(livro);
 	}
-
-	
 
 	@Override
 	protected void vaPara() {
@@ -240,43 +288,42 @@ public class CadastroLivro extends CadastroBase {
 	@Override
 	protected void incluir() {
 		habilitarCampos(false);
-		jtfCodigo.setText("");
-		jtfDescricao.setText("");
-		jtfISBN.setText("");
-		jtfPreco.setText("");
-		
-	}	
+		limpar();
+
+	}
 
 	@Override
 	protected void remover() {
 		habilitarCampos(true);
-		int op = JOptionPane.showConfirmDialog(this, "Confirma exclusão do registro?", "EXCLUSÃO", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE );
-		if (op == 0) confirmar();
+		int op = JOptionPane.showConfirmDialog(this, "Confirma exclusão do registro?", "EXCLUSÃO",
+				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		if (op == 0)
+			confirmar();
 	}
 
 	@Override
 	protected void confirmar() {
 		switch (operacao) {
 		case INCLUIR:
-			livro = new Livro();			
+			livro = new Livro();
 			atualizarLivro();
 			livroService.persist(livro);
 			break;
 		case ALTERAR:
-			atualizarLivro();			
+			atualizarLivro();
 			livroService.update(livro);
 			break;
 		case REMOVER:
 			livroService.remove(livro);
 			gotoAnterior();
-			break;		
+			break;
 		default:
 			break;
 		}
 		habilitarCampos(true);
 		preencher(livro);
-		operacao = 0;		
-		totallivro = livroService.countAll().intValue() - 1;		
+		operacao = 0;
+		totallivro = livroService.countAll().intValue() - 1;
 
 	}
 
@@ -285,26 +332,26 @@ public class CadastroLivro extends CadastroBase {
 		livro.setISBN(jtfISBN.getText());
 		try {
 			String numberToFormat = jtfPreco.getText();
-	        NumberFormat formatter = NumberFormat.getNumberInstance();
-	        Number number = formatter.parse(numberToFormat);
+			NumberFormat formatter = NumberFormat.getNumberInstance();
+			Number number = formatter.parse(numberToFormat);
 			BigDecimal decimal = BigDecimal.valueOf(number.doubleValue());
 			livro.setPreco(decimal);
-		} catch (ParseException e) {				
+		} catch (ParseException e) {
 			e.printStackTrace();
-		}			
-		
+		}
+		if (editora != null) livro.setEditora(editora);
+
 	}
 
 	@Override
 	protected void cancelar() {
 		habilitarCampos(true);
 		preencher(livro);
-		
+
 	}
-	
-	
+
 	@Override
-	protected void habilitarCampos(boolean habilita){
+	protected void habilitarCampos(boolean habilita) {
 		super.habilitarCampos(habilita);
 		jtfCodigo.setEditable(false);
 		jtfDescricao.setEditable(!habilita);

@@ -31,8 +31,7 @@ public class LivroService extends BaseService<Long, Livro> {
 			StringBuffer jpql = new StringBuffer();
 			jpql.append("FROM ");
 			jpql.append(entityClass.getSimpleName());
-			jpql.append(" en where en.descricao = :descricao");
-			
+			jpql.append(" en where en.descricao = :descricao");			
 
 			TypedQuery<Livro> query = getEm().createQuery(jpql.toString(), entityClass);
 			query.setParameter("descricao", "%" + nome + "%");
