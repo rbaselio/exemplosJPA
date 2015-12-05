@@ -45,7 +45,7 @@ public class LerDado extends JDialog {
 		try{
 			return Integer.parseInt(retorno);
 		} catch(Exception e1){
-			return null;
+			return 0;
 		}	
 		
 

@@ -4,13 +4,19 @@ import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+@SuppressWarnings("unused")
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Cliente {
 	
 	@Id
@@ -28,6 +34,9 @@ public class Cliente {
 	
 	@OneToOne (cascade = CascadeType.ALL)
 	private Endereco endereco;
+	
+	@Embedded
+	private CPF cpf;
 
 	public Long getId() {
 		return id;
@@ -67,6 +76,24 @@ public class Cliente {
 
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
+	}
+	
+	
+
+	
+	private CPF getCpf() {
+		return cpf;
+	}
+
+	private void setCpf(CPF cpf) {
+		this.cpf = cpf;
+	}
+	
+	private void setValorCpf(String cpf){
+		if(this.cpf == null){
+			this.cpf = new CPF();
+		}
+		this.cpf.setCpf(cpf);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package br.com.roberto.mediaStore.entities;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -19,7 +19,7 @@ public class Album extends Produto{
 	
 	@JoinColumn(name = "album_id")
 	@OneToMany (cascade = CascadeType.ALL)
-	private List<Musica> musicas;
+	private Set<Musica> musicas;
 
 	public Integer getFaixas() {
 		if(musicas != null) return 0;
@@ -30,20 +30,35 @@ public class Album extends Produto{
 		this.faixas = faixas;
 	}		
 
-	public List<Musica> getMusicas() {
+	public Set<Musica> getMusicas() {
 		return musicas;
 	}
+	
 
-	public void setMusicas(List<Musica> list) {
-		this.musicas = list;
-		setFaixas(list.size());
+	public void addMusicas(Musica musica) {
+		if (musicas == null) musicas = new HashSet<Musica>(); 
+		System.out.println(musicas.add(musica));
+		
+		setFaixas(musicas.size());
 	}
 
+	public void removeMusicas(Musica musica) {
+		musicas.remove(musica);
+		setFaixas(musicas.size());
+	}
 		
 	@Override
 	public String toString() {
 		return "Album [getId()=" + getId() + ", getDescricao()=" + getDescricao() + ", faixas=" + faixas + ", musicas="
 				+ musicas + "]";
+	}
+
+	public String getduracao() {
+		Integer cont = 0;
+		for (Musica musica : musicas) {
+			cont += musica.getDuracao();			
+		}
+		return cont.toString();
 	}
 	
 	

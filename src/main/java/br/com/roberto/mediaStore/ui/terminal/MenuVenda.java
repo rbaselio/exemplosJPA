@@ -1,7 +1,10 @@
+
 package br.com.roberto.mediaStore.ui.terminal;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import br.com.roberto.mediaStore.entities.Cliente;
@@ -14,6 +17,11 @@ import br.com.roberto.mediaStore.services.VendaService;
 
 
 public class MenuVenda extends MenuBase {
+	
+	private VendaService vendaService = new VendaService();
+	Cliente cliente = null;
+	ClienteService clienteSevice = new ClienteService();
+	ProdutoService produtoService = new ProdutoService();
 
 	@Override
 	public void executar() throws IOException {
@@ -23,7 +31,7 @@ public class MenuVenda extends MenuBase {
 			System.out.println("-----------------------------");
 			System.out.println("Clientes:");
 			System.out.println("1\t-\tVender");
-			System.out.println("1\t-\tTotal por cliente");
+			System.out.println("2\t-\tTotal por cliente");
 			System.out.println();
 			System.out.println("0\t-\tVoltar");
 			System.out.print("Escolha sua opcao: ");
@@ -36,6 +44,7 @@ public class MenuVenda extends MenuBase {
 			vender();
 			break;
 		case '2':
+			totalPorCliente();
 			break;
 		case '3':
 			break;
@@ -48,11 +57,33 @@ public class MenuVenda extends MenuBase {
 		}
 	}
 
+	private void totalPorCliente() {
+		/*BigDecimal total;
+		do {
+			Long id = pedirLong("Inform o Cliente:");
+			Cliente cliente = clienteSevice.findById(id);
+			total = vendaService.totalCliente(cliente);
+			if (total == null)
+				System.out.println("Total não encontrado");
+		} while (total == null);*/
+		
+		vendaService.totalPorCliente();
+		
+		for(Entry<Cliente, BigDecimal> entry : vendaService.totalPorCliente().entrySet()) {
+			System.out.println("Este cliente vendeu: " + entry.getKey().getNome());
+			System.out.println("Este cliente vendeu: " + entry.getValue());
+		    
+		}
+
+	
+		
+		
+		
+	}
+
 	private void vender() {
 		Venda venda = new Venda();
-		Cliente cliente = null;
-		ClienteService clienteSevice = new ClienteService();
-		ProdutoService produtoService = new ProdutoService();
+		
 		do{
 			Long id = pedirLong("Inform o Cliente:");
 			cliente = clienteSevice.findById(id);
@@ -75,9 +106,9 @@ public class MenuVenda extends MenuBase {
 			itemVendas.add(itemvenda);
 		}while(confirmacao("Inserir novo produdo (s/n)?"));
 		
-		venda.setItemVendas(itemVendas);
+		//venda.setItemVendas(itemVendas);
 		venda.setData(pedirData("Ditige a data da venda:"));
-		new VendaService().persist(venda);
+		vendaService.persist(venda);
 	}
 	
 	

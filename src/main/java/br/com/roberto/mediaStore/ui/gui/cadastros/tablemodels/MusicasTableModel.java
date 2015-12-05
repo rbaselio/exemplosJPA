@@ -2,6 +2,7 @@ package br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -13,30 +14,17 @@ public class MusicasTableModel extends AbstractTableModel {
 	private List<Musica> li;
 	private String[] columnNames;
 
-	public MusicasTableModel(List<Musica> list) {
-		this.li = list;
+	public MusicasTableModel(Set<Musica> list) {
+		this.li = new ArrayList<Musica>(list);
 		this.columnNames = new String[] { "Nome", "Duração" };
 	}
 	
-	public MusicasTableModel(){
-		this.li = new ArrayList<Musica>();
-		
-	}
-
 	public int getRowCount() {
 		return li.size();
 	}
 	
-	public void addMusica(Musica musica){
-		li.add(musica);
-	}
-	
-	public List<Musica> getMusicList(){
-		return (li) ;
-	}
-	
-	public void limparMusicList(){
-		li.clear();
+	public Musica removerMusica(int i){
+		return li.remove(i);
 	}
 
 	public int getColumnCount() {
@@ -54,12 +42,9 @@ public class MusicasTableModel extends AbstractTableModel {
 
 	}
 
-	public Musica getValueAt(int selectedRow) {
-		return li.get(selectedRow);
-	}
-	
-	public Musica removeValueAt(int selectedRow) {
-		return li.get(selectedRow);
+	public void limpar() {
+		li.clear();
+		
 	}
 	
 }

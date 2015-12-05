@@ -7,7 +7,6 @@ import javax.persistence.TypedQuery;
 
 import br.com.roberto.mediaStore.entities.Album;
 import br.com.roberto.mediaStore.services.BaseService;
-import br.com.roberto.mediaStore.services.ProdutoService;
 import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
 public class AlbumService extends BaseService<Long, Album>  {

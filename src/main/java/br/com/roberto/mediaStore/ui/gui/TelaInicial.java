@@ -19,6 +19,7 @@ import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroClientes;
 import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroEditora;
 import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroFilme;
 import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroLivro;
+import br.com.roberto.mediaStore.ui.gui.cadastros.CadastroVenda;
 import br.com.roberto.mediaStore.utils.EntityManagerUtil;
 
 public class TelaInicial extends JFrame {
@@ -120,6 +121,14 @@ public class TelaInicial extends JFrame {
 		
 		JMenu JMVendas = new JMenu("Vendas");
 		menuBar.add(JMVendas);
+		
+		JMenuItem mntmVender = new JMenuItem("Vender");
+		mntmVender.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new CadastroVenda().setVisible(true);
+			}
+		});
+		JMVendas.add(mntmVender);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));

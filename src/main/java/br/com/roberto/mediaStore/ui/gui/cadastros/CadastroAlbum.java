@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -39,7 +37,7 @@ public class CadastroAlbum extends CadastroBase {
 
 	private AlbumService albumService = new AlbumService();
 	private Album album = new Album();
-	private List<Musica> musicas;
+	
 	MusicasTableModel musicasModel;
 
 	private Integer max = 1;
@@ -123,10 +121,10 @@ public class CadastroAlbum extends CadastroBase {
 		scrollPane.setViewportView(table);
 		btnAddMusica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				musicasModel = MusicasAlbum.setMusicas(estajanela, table, musicasModel);
+				Musica novamusica = MusicasAlbum.getMusicas(estajanela);
+				album.addMusicas(novamusica);
 				atualizarAlbum();
-				preencher(album);		
-				
+				preencher(album);				
 			}
 		});
 
@@ -136,8 +134,8 @@ public class CadastroAlbum extends CadastroBase {
 		panel.add(btnAddMusica);
 		btnRemoveMusica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				musicas = album.getMusicas();
-				musicas.remove(musicasModel.removeValueAt(table.getSelectedRow()));
+				musicasModel = new MusicasTableModel(album.getMusicas());
+				album.removeMusicas(musicasModel.removerMusica(table.getSelectedRow()));
 				atualizarAlbum();
 				preencher(album);
 
@@ -159,6 +157,7 @@ public class CadastroAlbum extends CadastroBase {
 	}
 
 	private void preencher(Album album) {
+		
 		if (album != null) {
 			try {
 				jtfCodigo.setText(album.getId().toString());
@@ -169,16 +168,12 @@ public class CadastroAlbum extends CadastroBase {
 			jtfFaixas.setText(album.getFaixas().toString());
 			DecimalFormat df = new DecimalFormat("#,##0.00");
 			jtfPreco.setText(df.format(album.getPreco()));
-			musicasModel = new MusicasTableModel(album.getMusicas());
+			jtfFaixas.setText(album.getduracao());
 			
+			musicasModel = new MusicasTableModel(album.getMusicas());			
 			table.setModel(musicasModel);
-			table.updateUI();
-			
-		} else{
-			musicasModel = new MusicasTableModel(new ArrayList<Musica>());
-			table.setModel(musicasModel);
-			table.updateUI();
-		}
+			table.updateUI();			
+		} 		
 
 	}
 
@@ -195,7 +190,7 @@ public class CadastroAlbum extends CadastroBase {
 
 	@Override
 	protected void gotoProximo() {
-		if (start < totalalbum)
+		if (start < totalalbum - 1)
 			start += 1;
 		album = albumService.find(start, max);
 		preencher(album);
@@ -213,7 +208,7 @@ public class CadastroAlbum extends CadastroBase {
 
 	@Override
 	protected void gotoUltimo() {
-		start = totalalbum;
+		start = totalalbum - 1;
 		album = albumService.find(start, max);
 		preencher(album);
 
@@ -253,9 +248,12 @@ public class CadastroAlbum extends CadastroBase {
 		jtfDescricao.setText("");
 		jtfFaixas.setText("");
 		jtfPreco.setText("0,00");
-		if (musicasModel != null)
-			musicasModel.limparMusicList();
-		table.updateUI();
+		
+		musicasModel.limpar();		
+		table.setModel(musicasModel);
+		table.updateUI();		
+		
+		
 	}
 
 	@Override
@@ -295,7 +293,7 @@ public class CadastroAlbum extends CadastroBase {
 
 	private void atualizarAlbum() {
 		album.setDescricao(jtfDescricao.getText());
-		album.setMusicas(musicasModel.getMusicList());
+		
 		try {
 			String numberToFormat = jtfPreco.getText();
 			NumberFormat formatter = NumberFormat.getNumberInstance();

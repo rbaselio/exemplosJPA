@@ -2,9 +2,7 @@ package br.com.roberto.mediaStore.ui.terminal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import br.com.roberto.mediaStore.entities.Album;
 import br.com.roberto.mediaStore.entities.Musica;
@@ -91,7 +89,7 @@ public class MenuAlbum extends MenuBase {
 			musicas.add(musica);
 		}while (confirmacao("Incluir mais musicas (s/n)?"));
 		
-		album.setMusicas(musicas);
+		//album.setMusicas(musicas);
 		albumService.persist(album);
 		
 		

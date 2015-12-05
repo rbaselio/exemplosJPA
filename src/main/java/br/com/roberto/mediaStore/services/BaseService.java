@@ -32,11 +32,15 @@ public class BaseService<T, E> {
 		if (offset != null) query.setFirstResult(offset);
 		if (max != null) query.setMaxResults(max);
 		E c;
+		
 		try{
 			c = query.getSingleResult();
+			
 		}catch (NoResultException e){
+			
 			c = null;
-		}		
+		}	
+		
 		return c;
 	}
 	

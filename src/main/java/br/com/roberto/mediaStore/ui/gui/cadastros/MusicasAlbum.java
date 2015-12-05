@@ -10,12 +10,10 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import br.com.roberto.mediaStore.entities.Musica;
-import br.com.roberto.mediaStore.ui.gui.cadastros.tablemodels.MusicasTableModel;
 import br.com.roberto.mediaStore.utils.TamanhoMaximo;
 
 public class MusicasAlbum extends JDialog {
@@ -27,10 +25,10 @@ public class MusicasAlbum extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private static JTextField jtfNome;
 	private static JTextField jtfduracao;
-	private static MusicasTableModel modelMusicas;
-	
+		
 	private static MusicasAlbum instance;
-	private static JTable tabelaMusicas;
+	private static Musica musica;
+	
 	
 	
 	private MusicasAlbum() {
@@ -61,25 +59,14 @@ public class MusicasAlbum extends JDialog {
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			
 			{
-				JButton btnSOK = new JButton("Adicionar");
-				btnSOK.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adicionarMusica(true);						
-					}
-					
-				});
-				btnSOK.setActionCommand("Adicionar");
-				buttonPane.add(btnSOK);	
-				getRootPane().setDefaultButton(btnSOK);
-				
-			}
-			{
-				JButton okButton = new JButton("Adiconar e Sair");
+				JButton okButton = new JButton("Adicionar e Sair");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						adicionarMusica(false);
+						musica = new Musica();
+						musica.setDuracao(Integer.parseInt(jtfduracao.getText()));
+						musica.setNome(jtfNome.getText());	
+						instance.setVisible(false);
 						
 					}
 				});
@@ -100,34 +87,20 @@ public class MusicasAlbum extends JDialog {
 		}
 	}
 	
-	private void adicionarMusica(boolean continua) {
-		Musica musica = new Musica();
-		musica.setDuracao(Integer.parseInt(jtfduracao.getText()));
-		musica.setNome(jtfNome.getText());
-		modelMusicas.addMusica(musica);		
-		tabelaMusicas.updateUI();
-		jtfduracao.setText("");
-		jtfNome.setText("");
-		jtfduracao.requestFocus();
-		
-		
-		
-		if (!continua) instance.setVisible(continua);
-	}
+	
 
 
-	public static MusicasTableModel setMusicas(JFrame pai, JTable table, MusicasTableModel musicas) {
-		modelMusicas = musicas;
-		tabelaMusicas = table;	
+	public static Musica getMusicas(JFrame pai) {			
 		
 		if (instance == null) instance = new MusicasAlbum();
 		
 		jtfduracao.setDocument(new TamanhoMaximo(5, true));
+		jtfduracao.setText("0");
 		instance.setLocationRelativeTo(pai);
 		instance.setTitle("Digite o valor a ser pesquisado");
 		instance.setModal(true);
-		instance.setVisible(true);		
-		System.out.println(modelMusicas);
-		return modelMusicas;
+		instance.setVisible(true);				
+		
+		return musica;
 	}
 }

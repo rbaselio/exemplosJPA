@@ -124,7 +124,7 @@ public class CadastroLivro extends CadastroBase {
 		jtfEditoraID.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (jtfEditoraID.isEditable() || e.getClickCount() == 2 ) {
+				if (jtfEditoraID.isEditable() && e.getClickCount() == 2 ) {
 					EditoraTableModel tableModel = new EditoraTableModel();
 					tableModel.setService(editoraService);
 					editora = tableModel.getEntidade(TelaConsulta.getEntidade(estajanela, tableModel, null));
@@ -137,8 +137,7 @@ public class CadastroLivro extends CadastroBase {
 		jtfEditoraID.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				editora =  editoraService.findById(Long.parseLong(jtfEditoraID.getText()));
-					
+				editora =  editoraService.findById(Long.parseLong(jtfEditoraID.getText()));					
 				if (editora != null){
 					livro.setEditora(editora);
 					preencher(editora);
